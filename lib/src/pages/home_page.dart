@@ -1,66 +1,181 @@
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mobile_20120598/src/components/header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
+
   final String title;
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
-class _HomePageState extends State<HomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _HomePageState extends State<HomePage> {
+  List<String> list = <String>['Nước ngoài', 'Việt Nam', 'Bản địa'];
+  String dropdownValue = "Nước ngoài";
+  TextEditingController dateInput = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: Column(
+        children: [
+          const Header(login: true),
+          Expanded(
+              child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  color: Colors.blue,
+                  padding: const EdgeInsets.only(
+                      top: 46, bottom: 30, left: 30, right: 30),
+                  child: const Column(
+                    children: [
+                      Text("Bạn không có buổi học nào.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 30, color: Colors.white)),
+                      Padding(padding: EdgeInsets.only(top: 26)),
+                      Text(
+                        "Chào mừng bạn đến với Letutor.",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
+                  width: double.infinity,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Tìm kiếm gia sư",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const Padding(padding: EdgeInsets.only(bottom: 20)),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Padding(
+                                  padding: EdgeInsets.only(bottom: 18),
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                        hintText: "Nhập tên gia sư..."),
+                                  )),
+                            ),
+                            const Padding(padding: EdgeInsets.only(right: 10)),
+                            DropdownButton<String>(
+                              value: dropdownValue,
+                              padding: const EdgeInsets.only(bottom: 0),
+                              icon: const Icon(Icons.arrow_downward),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.black26,
+                              ),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  dropdownValue = value!;
+                                });
+                              },
+                              items: list.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            )
+                          ],
+                        ),
+                        const Text("Chọn một ngày có lịch trống"),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: TextField(
+                              controller: dateInput,
+                              //editing controller of this TextField
+                              decoration: const InputDecoration(
+                                  icon: Icon(Icons.calendar_today),
+                                  //icon of text field
+                                  labelText: "Enter Date" //label text of field
+                                  ),
+                              readOnly: true,
+                              //set it true, so that user will not able to edit text
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1950),
+                                    //DateTime.now() - not to allow to choose before today.
+                                    lastDate: DateTime(2100));
+
+                                if (pickedDate != null) {
+                                  print(
+                                      pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                  print(
+                                      formattedDate); //formatted date output using intl package =>  2021-03-16
+                                  setState(() {
+                                    dateInput.text =
+                                        formattedDate; //set output date to TextField value.
+                                  });
+                                } else {}
+                              },
+                            )),
+                          ],
+                        ),
+                        const Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                    icon: Icon(Icons.timer),
+                                    //icon of text field
+                                    labelText:
+                                        "Start time" //label text of field
+                                    ),
+                              ),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                    icon: Icon(Icons.timer),
+                                    //icon of text field
+                                    labelText: "End time" //label text of field
+                                    ),
+                              ),
+                            )
+                          ],
+                        )
+                      ]),
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+          ))
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () => {},
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+          const Padding(padding: EdgeInsets.only(top: 8)),
+          FloatingActionButton(
+            onPressed: () => {},
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          )
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

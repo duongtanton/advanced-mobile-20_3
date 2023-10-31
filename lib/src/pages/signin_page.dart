@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile_20120598/src/components/header.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key, required this.title});
@@ -30,7 +31,7 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       body: Column(
         children: [
-          const Header(),
+          const Header(login: false),
           Expanded(
               child: SingleChildScrollView(
             child: Column(
@@ -139,35 +140,6 @@ class _SignInPageState extends State<SignInPage> {
           ))
         ],
       ),
-    );
-  }
-}
-
-class Header extends StatelessWidget {
-  const Header({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      decoration: const BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: Colors.black54,
-            blurRadius: 15.0,
-            offset: Offset(0.0, 0.75) // changes position of shadow
-            ),
-      ], color: Colors.white),
-      child: Container(
-          padding: const EdgeInsets.only(top: 15, left: 20, bottom: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SvgPicture.asset("assets/images/logo.svg", width: 180),
-              IconButton(
-                  onPressed: () => {},
-                  icon: SvgPicture.asset("assets/images/vi.svg"))
-            ],
-          )),
     );
   }
 }
