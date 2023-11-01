@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_20120598/src/pages/booking_page.dart';
 import 'package:mobile_20120598/src/pages/home_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(title: "Home"),
         '/sign-in': (context) => const SignInPage(title: "LetTuTor"),
+        '/booking': (context) => const BookingPage(title: "LetTuTor"),
       },
     );
   }
