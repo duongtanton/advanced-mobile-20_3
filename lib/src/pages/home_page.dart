@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_20120598/src/components/header.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
 class HomePage extends StatefulWidget {
@@ -450,6 +451,14 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                      NumberPaginator(
+                        numberPages: 10,
+                        onPageChange: (int index) {
+
+                          // handle page change...
+                        },
+                      )
                     ],
                   ),
                 )
@@ -462,14 +471,16 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: "Gift",
             onPressed: () => {},
-            tooltip: 'Increment',
+            tooltip: 'Gift',
             child: const Icon(Icons.gif_box),
           ),
           const Padding(padding: EdgeInsets.only(top: 8)),
           FloatingActionButton(
+            heroTag: "Message",
             onPressed: () => {},
-            tooltip: 'Increment',
+            tooltip: 'Message',
             child: const Icon(Icons.message),
           )
         ],

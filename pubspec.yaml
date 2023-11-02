@@ -40,6 +40,8 @@ dependencies:
   time_range_picker: ^2.2.0
   readmore: ^2.2.0
   video_player: ^2.7.0
+  syncfusion_flutter_calendar: ^23.1.43
+  number_paginator: ^0.4.0
 
 dev_dependencies:
   flutter_test:
