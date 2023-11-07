@@ -43,6 +43,7 @@ dependencies:
   syncfusion_flutter_calendar: ^23.1.43
   number_paginator: ^0.4.0
   easy_autocomplete: ^1.6.0
+  easy_search_bar: ^2.5.0
 
 dev_dependencies:
   flutter_test:
