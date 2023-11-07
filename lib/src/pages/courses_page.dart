@@ -170,12 +170,12 @@ class _CoursesPageState extends State<CoursesPage> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.only(top: 40)),
-                const DefaultTabController(
+                DefaultTabController(
                     length: 3,
                     child: SizedBox(
                       height: 500,
                       child: Scaffold(
-                          appBar: TabBar(
+                          appBar: const TabBar(
                             labelColor: Colors.black87,
                             tabs: [
                               Tab(icon: Icon(Icons.directions_car)),
@@ -185,16 +185,18 @@ class _CoursesPageState extends State<CoursesPage> {
                           ),
                           body: TabBarView(
                             children: [
-                              Row(
-                                  children: [
-                                Column(
-                                  children: [
-
-                                  ],
-                                )
-                              ]),
-                              Icon(Icons.directions_transit),
-                              Icon(Icons.directions_bike),
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(context, "/course-info");
+                                },
+                                child: const Icon(Icons.directions_transit),
+                              ),
+                              GestureDetector(
+                                child: const Icon(Icons.directions_transit),
+                              ),
+                              GestureDetector(
+                                child: const Icon(Icons.directions_bike),
+                              ),
                             ],
                           )),
                     )),
