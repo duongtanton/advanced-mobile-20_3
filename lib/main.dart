@@ -4,6 +4,7 @@ import 'package:mobile_20120598/src/pages/course_info_page.dart';
 import 'package:mobile_20120598/src/pages/courses_page.dart';
 import 'package:mobile_20120598/src/pages/evaluate_page.dart';
 import 'package:mobile_20120598/src/pages/home_page.dart';
+import 'package:mobile_20120598/src/pages/lesson_info.dart';
 import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/evaluate': (context) => const EvaluatePage(title: "LetTuTor"),
         '/courses': (context) => const CoursesPage(title: "LetTuTor"),
         '/course-info': (context) => const CourseInfoPage(title: "LetTuTor"),
+        '/lesson-info': (context) => const LessonInfoPage(title: "LetTuTor"),
         '/video-call': (context) => const VideoCallPage(title: "LetTuTor"),
       },
     );
