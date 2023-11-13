@@ -23,7 +23,11 @@ class _BookingPageState extends State<BookingPage> {
     super.initState();
     setState(() {
       _controller = VideoPlayerController.networkUrl(Uri.parse(
-          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'));
+          'https://api.app.lettutor.com/video/4d54d3d7-d2a9-42e5-97a2-5ed38af5789avideo1627913015871.mp4'))
+
+        ..initialize().then((_) {
+          setState(() {});
+        });
     });
   }
 
@@ -39,7 +43,7 @@ class _BookingPageState extends State<BookingPage> {
             padding:
                 const EdgeInsets.only(bottom: 30, top: 26, left: 26, right: 26),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   children: [
@@ -157,14 +161,14 @@ class _BookingPageState extends State<BookingPage> {
                     )
                   ],
                 ),
-                // Center(
-                //   child: _controller.value.isInitialized
-                //       ? AspectRatio(
-                //     aspectRatio: _controller.value.aspectRatio,
-                //     child: VideoPlayer(_controller),
-                //   )
-                //       : Container(),
-                // ),
+                Center(
+                  child: _controller.value.isInitialized
+                      ? AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        )
+                      : Container(),
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

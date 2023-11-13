@@ -49,9 +49,14 @@ class _EvaluatePageState extends State<EvaluatePage> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20)),
-                const Text(
-                  "Lịch sử các buổi học",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pushNamed(context, "/courses");
+                  },
+                  child: const Text(
+                    "Lịch sử các buổi học",
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+                  ),
                 ),
                 const Padding(padding: EdgeInsets.only(top: 10)),
                 IntrinsicHeight(
@@ -89,175 +94,338 @@ class _EvaluatePageState extends State<EvaluatePage> {
                           offset: const Offset(0, 3),
                         ),
                       ],
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)),
+                      color: const Color.fromRGBO(239, 239, 240, 1)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(80),
-                                child: const Image(
-                                  image:
-                                  AssetImage("assets/images/teacher.jpg"),
-                                  height: 80,
-                                  width: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            ],
-                          ),
-                          const Padding(padding: EdgeInsets.only(left: 20)),
-                          Column(
-                            children: [
-                              const Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Keegan",
-                                    style: TextStyle(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.w600),
+                      const Text("CN, 05 Thg 11 23", style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w600
+                      )),
+                      const Text("1 week ago"),
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:Row(
+                          children: [
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(80),
+                                  child: const Image(
+                                    image:
+                                    AssetImage("assets/images/teacher.jpg"),
+                                    height: 60,
+                                    width: 60,
+                                    fit: BoxFit.cover,
                                   ),
-                                ],
-                              ),
+                                )
+                              ],
+                            ),
+                            const Padding(padding: EdgeInsets.only(left: 20)),
+                            Column(
+                              children: [
+                                const Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Keegan",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/images/vi.svg",
+                                      height: 20,
+                                    ),
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 10)),
+                                    const Text("Vietnam")
+                                  ],
+                                ),
+                                const Padding(padding: EdgeInsets.only(top: 4)),
+                                const Row(
+                                  children: [
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      size: 16,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 26),
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:const Text("Thời gian bài học : 19:30 - 19:55", style: TextStyle(fontSize: 22)),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:const Text("Không có yêu cầu cho buổi học", style: TextStyle(fontSize: 16)),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        margin: const EdgeInsets.only(top: 2),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:const Text("Gia sư chưa có đánh giá", style: TextStyle(fontSize: 16)),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        margin: const EdgeInsets.only(top: 2),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child: const Row(
+                          children: [
+                            Column(children: [
+                              Text("Raiting"),
+                              Padding(padding:EdgeInsets.only(top: 10)),
+                              Text("Sửa", style: TextStyle(color: Colors.blue))
+                            ],),
+                            Padding(padding:EdgeInsets.only(left: 20)),
+                            Column(children: [
                               Row(
                                 children: [
-                                  SvgPicture.asset(
-                                    "assets/images/vi.svg",
-                                    height: 26,
-                                  ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(left: 10)),
-                                  const Text("Vietnam")
-                                ],
-                              ),
-                              const Padding(padding: EdgeInsets.only(top: 4)),
-                              const Row(
-                                children: [
                                   Icon(
                                     IconData(0xe5f9, fontFamily: 'MaterialIcons'),
                                     color: Colors.amber,
-                                    size: 18,
+                                    size: 16,
                                   ),
                                   Icon(
                                     IconData(0xe5f9, fontFamily: 'MaterialIcons'),
                                     color: Colors.amber,
-                                    size: 18,
+                                    size: 16,
                                   ),
                                   Icon(
                                     IconData(0xe5f9, fontFamily: 'MaterialIcons'),
                                     color: Colors.amber,
-                                    size: 18,
+                                    size: 16,
                                   ),
                                   Icon(
                                     IconData(0xe5f9, fontFamily: 'MaterialIcons'),
                                     color: Colors.amber,
-                                    size: 18,
+                                    size: 16,
                                   ),
                                   Icon(
                                     IconData(0xe5f9, fontFamily: 'MaterialIcons'),
-                                    size: 18,
+                                    size: 16,
                                   )
                                 ],
                               ),
-                            ],
-                          )
-                        ],
+                              Padding(padding:EdgeInsets.only(top: 10)),
+                              Text("Báo cáo", style: TextStyle(color: Colors.blue),)
+                            ],)
+                          ],
+                        ),
                       ),
-                      const Padding(padding: EdgeInsets.only(top: 26)),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 6,
-                        children: [
-                          Container(
-                              padding: const EdgeInsets.only(
-                                  top: 8, right: 12, left: 12, bottom: 8),
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(16)),
-                                color: Color.fromRGBO(221, 234, 254, 1),
-                              ),
-                              child: const Text("Tất cả",
-                                  style: TextStyle(color: Colors.blue))),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                top: 8, right: 12, left: 12, bottom: 8),
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(16)),
-                              color: Color.fromRGBO(221, 234, 254, 1),
+                    ],
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.only(top: 26)),
+                Container(
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                      color: const Color.fromRGBO(239, 239, 240, 1)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text("CN, 05 Thg 11 23", style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600
+                      )),
+                      const Text("1 week ago"),
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:Row(
+                          children: [
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(80),
+                                  child: const Image(
+                                    image:
+                                    AssetImage("assets/images/teacher.jpg"),
+                                    height: 60,
+                                    width: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              ],
                             ),
-                            child: const Text("Tiếng anh cho trẻ em",
-                                style: TextStyle(color: Colors.blue)),
-                          ),
-                          Container(
-                              padding: const EdgeInsets.only(
-                                  top: 8, right: 12, left: 12, bottom: 8),
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(16)),
-                                color: Color.fromRGBO(221, 234, 254, 1),
-                              ),
-                              child: const Text("Tiếng anh cho công việc",
-                                  style: TextStyle(color: Colors.blue))),
-                          Container(
-                              padding: const EdgeInsets.only(
-                                  top: 8, right: 12, left: 12, bottom: 8),
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(16)),
-                                color: Color.fromRGBO(221, 234, 254, 1),
-                              ),
-                              child: const Text("Giao tiếp",
-                                  style: TextStyle(color: Colors.blue)))
-                        ],
+                            const Padding(padding: EdgeInsets.only(left: 20)),
+                            Column(
+                              children: [
+                                const Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Keegan",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/images/vi.svg",
+                                      height: 20,
+                                    ),
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 10)),
+                                    const Text("Vietnam")
+                                  ],
+                                ),
+                                const Padding(padding: EdgeInsets.only(top: 4)),
+                                const Row(
+                                  children: [
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    Icon(
+                                      IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                      size: 16,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      const Padding(padding: EdgeInsets.only(top: 10)),
-                      RichText(
-                        overflow: TextOverflow.ellipsis,
-                        strutStyle: const StrutStyle(fontSize: 12.0),
-                        maxLines: 4,
-                        text: const TextSpan(
-                            style: TextStyle(
-                                color: Colors.black38, height: 1.5),
-                            text:
-                            'I am passionate about running and fitness, I often compete in trail/mountain running events and I love pushing myself. I am training to one day take part in ultra-endurance events. I also enjoy watching rugby on the weekends, reading and watching podcasts on Youtube. My most memorable life experience would be living in and traveling around Southeast Asia.'),
+                      Container(
+                        margin: const EdgeInsets.only(top: 26),
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:const Text("Thời gian bài học : 19:30 - 19:55", style: TextStyle(fontSize: 22)),
                       ),
-                      const Padding(padding: EdgeInsets.only(top: 20)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: (){
-                              Navigator.pushNamed(context, "/courses");
-                            },
-                            icon: const Icon(
-                              IconData(0xe122,
-                                  fontFamily: 'MaterialIcons'),
-                              color: Colors.blue,
-                            ),
-                            label: const Text(
-                              "Đặt lịch",
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(18.0),
-                                      side: const BorderSide(
-                                          color: Colors.blue))),
-                              backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                            ),
-                          )
-                        ],
-                      )
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:const Text("Không có yêu cầu cho buổi học", style: TextStyle(fontSize: 16)),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        margin: const EdgeInsets.only(top: 2),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child:const Text("Gia sư chưa có đánh giá", style: TextStyle(fontSize: 16)),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
+                        margin: const EdgeInsets.only(top: 2),
+                        decoration: const BoxDecoration(
+                            color: Colors.white),
+                        child: const Row(
+                          children: [
+                            Column(children: [
+                              Text("Raiting"),
+                              Padding(padding:EdgeInsets.only(top: 10)),
+                              Text("Sửa", style: TextStyle(color: Colors.blue))
+                            ],),
+                            Padding(padding:EdgeInsets.only(left: 20)),
+                            Column(children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                    color: Colors.amber,
+                                    size: 16,
+                                  ),
+                                  Icon(
+                                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                    color: Colors.amber,
+                                    size: 16,
+                                  ),
+                                  Icon(
+                                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                    color: Colors.amber,
+                                    size: 16,
+                                  ),
+                                  Icon(
+                                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                    color: Colors.amber,
+                                    size: 16,
+                                  ),
+                                  Icon(
+                                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                                    size: 16,
+                                  )
+                                ],
+                              ),
+                              Padding(padding:EdgeInsets.only(top: 10)),
+                              Text("Báo cáo", style: TextStyle(color: Colors.blue),)
+                            ],)
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
