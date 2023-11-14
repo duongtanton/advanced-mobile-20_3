@@ -36,11 +36,16 @@ class _CoursesPageState extends State<CoursesPage> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
-                          CupertinoIcons.upload_circle,
-                          size: 90,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, "/course-info");
+                          },
+                          child: Icon(
+                            CupertinoIcons.upload_circle,
+                            size: 90,
+                          ),
                         )
                       ],
                     ),
@@ -187,856 +192,869 @@ class _CoursesPageState extends State<CoursesPage> {
                             children: [
                               SingleChildScrollView(
                                   child: Container(
-                                    padding: EdgeInsets.only(
-                                        top: 20, right: 20, left: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
+                                padding: EdgeInsets.only(
+                                    top: 20, right: 20, left: 20),
+                                child: Column(
+                                  crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
-                                      children: [
-                                        Padding(padding: EdgeInsets.only(top: 30)),
-                                        Text("English for traveling",
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.w600)),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
+                                  children: [
+                                    Padding(padding: EdgeInsets.only(top: 30)),
+                                    Text("English for traveling",
+                                        style: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w600)),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
                                                   Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
                                               ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
                                                 ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
                                               ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  )),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
                               SingleChildScrollView(
                                   child: Container(
-                                    padding: EdgeInsets.only(
-                                        top: 20, right: 20, left: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
+                                padding: EdgeInsets.only(
+                                    top: 20, right: 20, left: 20),
+                                child: Column(
+                                  crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
-                                      children: [
-                                        Padding(padding: EdgeInsets.only(top: 30)),
-                                        Text("English for traveling",
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.w600)),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
+                                  children: [
+                                    Padding(padding: EdgeInsets.only(top: 30)),
+                                    Text("English for traveling",
+                                        style: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w600)),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
                                                   Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
                                               ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
                                                 ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
                                               ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  )),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
                               SingleChildScrollView(
                                   child: Container(
-                                    padding: EdgeInsets.only(
-                                        top: 20, right: 20, left: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
+                                padding: EdgeInsets.only(
+                                    top: 20, right: 20, left: 20),
+                                child: Column(
+                                  crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
-                                      children: [
-                                        Padding(padding: EdgeInsets.only(top: 30)),
-                                        Text("English for traveling",
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.w600)),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
+                                  children: [
+                                    Padding(padding: EdgeInsets.only(top: 30)),
+                                    Text("English for traveling",
+                                        style: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w600)),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
                                                   Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
                                               ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
                                                 ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
                                               ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(top: 15, bottom: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                  Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
-                                              color: Colors.white),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(bottom: 20),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                        "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    right: 20,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Life in the internet Age",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 8)),
-                                                    Text(
-                                                        "Let's discuss how technology is changing the way we live",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        )),
-                                                    Padding(
-                                                        padding: EdgeInsets.only(
-                                                            top: 30)),
-                                                    Text("Intermediate • 9 Lessons")
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  )),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          color: Colors.white),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 20),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    "https://camblycurriculumicons.s3.amazonaws.com/5e0e8b212ac750e7dc9886ac?h=d41d8cd98f00b204e9800998ecf8427e"),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 20,
+                                                bottom: 20,
+                                                left: 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Life in the internet Age",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8)),
+                                                Text(
+                                                    "Let's discuss how technology is changing the way we live",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                    )),
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 30)),
+                                                Text("Intermediate • 9 Lessons")
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
                             ],
                           )),
                     )),
