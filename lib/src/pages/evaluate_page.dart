@@ -51,7 +51,7 @@ class _EvaluatePageState extends State<EvaluatePage> {
                 const Padding(padding: EdgeInsets.only(top: 20)),
                 GestureDetector(
                   onTap: (){
-                    Navigator.pushNamed(context, "/courses");
+                    Navigator.popAndPushNamed(context, "/courses");
                   },
                   child: const Text(
                     "Lịch sử các buổi học",

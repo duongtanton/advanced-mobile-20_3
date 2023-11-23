@@ -14,14 +14,17 @@ class Header extends StatelessWidget {
             color: Colors.black54,
             blurRadius: 15.0,
             offset: Offset(0.0, 0.75) // changes position of shadow
-            ),
+        ),
       ], color: Colors.white),
       child: Container(
           padding: const EdgeInsets.only(top: 15, left: 20, bottom: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SvgPicture.asset("assets/images/logo.svg", width: 180),
+              GestureDetector(
+                onTap: () => Navigator.popAndPushNamed(context, "/"),
+                child: SvgPicture.asset("assets/images/logo.svg", width: 180),
+              ),
               Row(
                 children: [
                   IconButton(

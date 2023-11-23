@@ -15,6 +15,8 @@ class _SignInPageState extends State<SignInPage> {
   bool _obscured = false;
 
   final textFieldFocusNode = FocusNode();
+  String username = "";
+  String password = "";
 
   void _toggleObscured() {
     setState(() {
@@ -24,6 +26,27 @@ class _SignInPageState extends State<SignInPage> {
       }
       textFieldFocusNode.canRequestFocus = false;
     });
+  }
+
+  void _signin() {
+    if (username.isNotEmpty && password.isNotEmpty) {
+      Navigator.popAndPushNamed(context, '/');
+    } else {
+      print(username + password);
+    }
+  }
+
+  void _forgetPassword() {
+    String message = "";
+    if (username.isEmpty) {
+      message = "Bạn phải nhập email.";
+    } else {
+      //handle send email
+      message = "Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn.";
+    }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
   }
 
   @override
@@ -64,13 +87,17 @@ class _SignInPageState extends State<SignInPage> {
                   margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
                   child: Column(
                     children: [
-                      const TextField(
-                        decoration: InputDecoration(
-                            hintText: "mail@example.com",
-                            label: Text("ĐỊA CHỈ EMAIL")),
-                      ),
+                      TextFormField(
+                          decoration: const InputDecoration(
+                              hintText: "mail@example.com",
+                              label: Text("ĐỊA CHỈ EMAIL")),
+                          onChanged: (value) {
+                            setState(() {
+                              username = value;
+                            });
+                          }),
                       const Padding(padding: EdgeInsets.only(top: 20)),
-                      TextField(
+                      TextFormField(
                         obscureText: _obscured,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -84,12 +111,32 @@ class _SignInPageState extends State<SignInPage> {
                                       : Icons.visibility_off_rounded,
                                   size: 24,
                                 ))),
+                        onChanged: (value) {
+                          setState(() {
+                            password = value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value!.length < 9) {
+                            return 'Phone number must be 9 digits or longer';
+                          }
+                          return null;
+                        },
                       ),
                       const Padding(padding: EdgeInsets.only(top: 50)),
-                      const Text("Quên mật khẩu?", textAlign: TextAlign.start),
+                      GestureDetector(
+                        onTap: _forgetPassword,
+                        child: const Text(
+                          "Quên mật khẩu?",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline),
+                        ),
+                      ),
                       const Padding(padding: EdgeInsets.only(top: 10)),
                       TextButton(
-                          onPressed: () => {Navigator.pushNamed(context, '/')},
+                          onPressed: _signin,
                           style: ButtonStyle(
                               padding:
                                   const MaterialStatePropertyAll<EdgeInsets>(
@@ -119,15 +166,20 @@ class _SignInPageState extends State<SignInPage> {
                             ],
                           )),
                       const Padding(padding: EdgeInsets.only(top: 20)),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Bạn chưa có tài khoản? "),
-                          Text(
-                            "Đăng ký",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline),
+                          const Text("Bạn chưa có tài khoản? "),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.popAndPushNamed(context, "/sign-up");
+                            },
+                            child: const Text(
+                              "Đăng ký",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline),
+                            ),
                           ),
                         ],
                       ),

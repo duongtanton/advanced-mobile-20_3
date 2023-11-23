@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                                     width: 80,
                                     fit: BoxFit.cover,
                                   ),
-                                )
+                                ),
                               ],
                             ),
                             const Row(
@@ -316,6 +316,8 @@ class _HomePageState extends State<HomePage> {
                                       fontSize: 26,
                                       fontWeight: FontWeight.w600),
                                 ),
+                                Icon(Icons.favorite_border),
+                                Icon(Icons.favorite, color: Colors.red)
                               ],
                             ),
                             Row(
@@ -423,7 +425,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 ElevatedButton.icon(
                                   onPressed: (){
-                                    Navigator.pushNamed(context, "/booking");
+                                    Navigator.popAndPushNamed(context, "/booking");
                                   },
                                   icon: const Icon(
                                     IconData(0xe122,

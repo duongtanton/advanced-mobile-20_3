@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_20120598/src/components/header.dart';
+import 'package:mobile_20120598/src/components/video.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:readmore/readmore.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:video_player/video_player.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key, required this.title});
@@ -16,21 +16,6 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  late VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      _controller = VideoPlayerController.networkUrl(Uri.parse(
-          'https://api.app.lettutor.com/video/4d54d3d7-d2a9-42e5-97a2-5ed38af5789avideo1627913015871.mp4'))
-
-        ..initialize().then((_) {
-          setState(() {});
-        });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,14 +146,9 @@ class _BookingPageState extends State<BookingPage> {
                     )
                   ],
                 ),
-                Center(
-                  child: _controller.value.isInitialized
-                      ? AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
-                          child: VideoPlayer(_controller),
-                        )
-                      : Container(),
-                ),
+                Video(
+                    url:
+                        'https://api.app.lettutor.com/video/4d54d3d7-d2a9-42e5-97a2-5ed38af5789avideo1627913015871.mp4'),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -559,7 +539,7 @@ class _BookingPageState extends State<BookingPage> {
                 NumberPaginator(
                   numberPages: 10,
                   onPageChange: (int index) {
-                    Navigator.pushNamed(context, '/schedule');
+                    Navigator.popAndPushNamed(context, '/schedule');
                     // handle page change...
                   },
                 ),
@@ -596,11 +576,5 @@ class _BookingPageState extends State<BookingPage> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }

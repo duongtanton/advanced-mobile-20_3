@@ -7,6 +7,7 @@ import 'package:mobile_20120598/src/pages/home_page.dart';
 import 'package:mobile_20120598/src/pages/lesson_info.dart';
 import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
+import 'package:mobile_20120598/src/pages/signup_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
 
 void main() {
@@ -15,6 +16,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,6 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(title: "Home"),
         '/sign-in': (context) => const SignInPage(title: "LetTuTor"),
+        '/sign-up': (context) => const SignUpPagePage(title: "LetTuTor"),
         '/booking': (context) => const BookingPage(title: "LetTuTor"),
         '/schedule': (context) => const SchedulePage(title: "LetTuTor"),
         '/evaluate': (context) => const EvaluatePage(title: "LetTuTor"),
@@ -34,4 +37,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
