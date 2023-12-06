@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobile_20120598/src/components/header.dart';
+import 'package:mobile_20120598/src/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key, required this.title});
@@ -13,10 +17,95 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   bool _obscured = false;
+  String currentMode = "mail";
 
   final textFieldFocusNode = FocusNode();
-  String username = "";
-  String password = "";
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  late GoogleSignIn _googleSignIn;
+
+  Map<String, dynamic>? _userData;
+  AccessToken? _accessToken;
+  bool _checking = true;
+
+  late SharedPreferences prefs;
+
+  AuthService authService = AuthService();
+
+  @override
+  void initState() async {
+    super.initState();
+    _checkIfIsLogged();
+    prefs = await SharedPreferences.getInstance();
+    _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
+  }
+
+  Future<void> _checkIfIsLogged() async {
+    final accessToken = await FacebookAuth.instance.accessToken;
+    setState(() {
+      _checking = false;
+    });
+    if (accessToken != null) {
+      print("is Logged:::: ${accessToken.toJson()}");
+      // now you can call to  FacebookAuth.instance.getUserData();
+      final userData = await FacebookAuth.instance.getUserData();
+      // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
+      _accessToken = accessToken;
+      setState(() {
+        _userData = userData;
+      });
+    }
+  }
+
+  void _printCredentials() {
+    print(
+      _accessToken!.toJson(),
+    );
+  }
+
+  Future<void> _handleSignInFB() async {
+    final LoginResult result = await FacebookAuth.instance
+        .login(); // by default we request the email and the public profile
+
+    // loginBehavior is only supported for Android devices, for ios it will be ignored
+    // final result = await FacebookAuth.instance.login(
+    //   permissions: ['email', 'public_profile', 'user_birthday', 'user_friends', 'user_gender', 'user_link'],
+    //   loginBehavior: LoginBehavior
+    //       .DIALOG_ONLY, // (only android) show an authentication dialog instead of redirecting to facebook app
+    // );
+
+    if (result.status == LoginStatus.success) {
+      _accessToken = result.accessToken;
+      _printCredentials();
+      // get the user data
+      // by default we get the userId, email,name and picture
+      final userData = await FacebookAuth.instance.getUserData();
+      // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
+      _userData = userData;
+    } else {
+      print(result.status);
+      print(result.message);
+    }
+
+    setState(() {
+      _checking = false;
+    });
+  }
+
+  Future<void> _handleSignInGG() async {
+    try {
+      final response = await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Đăng nhập thất bại vui lòng thử lại.")));
+    }
+  }
 
   void _toggleObscured() {
     setState(() {
@@ -28,17 +117,32 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
-  void _signin() {
-    if (username.isNotEmpty && password.isNotEmpty) {
-      Navigator.popAndPushNamed(context, '/');
+  void _signin() async {
+    String message = "";
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      final response = await authService.loginByMail(
+          _emailController.text, _passwordController.text);
+      if (response['success'] == false) {
+        message = "Đăng nhập thất bại vui lòng thử lại.";
+      } else {
+        prefs.setString('access_token', response['tokens']["access"]["token"]);
+        prefs.setString(
+            'refresh_token', response['tokens']["refresh"]["token"]);
+        Navigator.popAndPushNamed(context, '/');
+        return;
+      }
     } else {
-      print(username + password);
+      message = "Vui lòng nhập email và mật khẩu.";
     }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
   }
 
   void _forgetPassword() {
     String message = "";
-    if (username.isEmpty) {
+    if (_emailController.text.isEmpty) {
       message = "Bạn phải nhập email.";
     } else {
       //handle send email
@@ -88,17 +192,18 @@ class _SignInPageState extends State<SignInPage> {
                   child: Column(
                     children: [
                       TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: "mail@example.com",
-                              label: Text("ĐỊA CHỈ EMAIL")),
-                          onChanged: (value) {
-                            setState(() {
-                              username = value;
-                            });
-                          }),
+                        decoration: InputDecoration(
+                            hintText: currentMode == "mb"
+                                ? "0987795761"
+                                : "mail@example.com",
+                            label: Text(currentMode == "mb"
+                                ? "SỐ ĐIỆN THOẠI"
+                                : "ĐỊA CHỈ EMAIL")),
+                        controller: _emailController,
+                      ),
                       const Padding(padding: EdgeInsets.only(top: 20)),
                       TextFormField(
-                        obscureText: _obscured,
+                        obscureText: !_obscured,
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
@@ -111,11 +216,7 @@ class _SignInPageState extends State<SignInPage> {
                                       : Icons.visibility_off_rounded,
                                   size: 24,
                                 ))),
-                        onChanged: (value) {
-                          setState(() {
-                            password = value;
-                          });
-                        },
+                        controller: _passwordController,
                         validator: (value) {
                           if (value!.length < 9) {
                             return 'Phone number must be 9 digits or longer';
@@ -153,16 +254,37 @@ class _SignInPageState extends State<SignInPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset("assets/images/fb.svg",
-                                  height: 40),
+                              GestureDetector(
+                                onTap: () {
+                                  _handleSignInFB();
+                                  currentMode = "fb";
+                                },
+                                child: SvgPicture.asset("assets/images/fb.svg",
+                                    height: 40),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(left: 6, right: 6)),
-                              SvgPicture.asset("assets/images/gg.svg",
-                                  height: 40),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    currentMode = "gg";
+                                  });
+                                  _handleSignInGG();
+                                },
+                                child: SvgPicture.asset("assets/images/gg.svg",
+                                    height: 40),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(left: 6, right: 6)),
-                              SvgPicture.asset("assets/images/mb.svg",
-                                  height: 40)
+                              GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      currentMode = "mb";
+                                    });
+                                  },
+                                  child: SvgPicture.asset(
+                                      "assets/images/mb.svg",
+                                      height: 40))
                             ],
                           )),
                       const Padding(padding: EdgeInsets.only(top: 20)),

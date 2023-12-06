@@ -9,8 +9,12 @@ import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/signup_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  const environment = String.fromEnvironment('FLAVOR', defaultValue: 'development');
+  await dotenv.load(fileName: '.env.$environment');
+
   runApp(const MyApp());
 }
 
