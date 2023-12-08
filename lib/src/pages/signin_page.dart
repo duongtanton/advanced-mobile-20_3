@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,18 +26,22 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _passwordController = TextEditingController();
   late GoogleSignIn _googleSignIn;
 
-  Map<String, dynamic>? _userData;
   AccessToken? _accessToken;
-  bool _checking = true;
 
   late SharedPreferences prefs;
 
   AuthService authService = AuthService();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    _checkIfIsLogged();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    await _checkIfIsLogged();
     prefs = await SharedPreferences.getInstance();
     _googleSignIn = GoogleSignIn(
       scopes: [
@@ -47,64 +53,61 @@ class _SignInPageState extends State<SignInPage> {
 
   Future<void> _checkIfIsLogged() async {
     final accessToken = await FacebookAuth.instance.accessToken;
-    setState(() {
-      _checking = false;
-    });
     if (accessToken != null) {
       print("is Logged:::: ${accessToken.toJson()}");
       // now you can call to  FacebookAuth.instance.getUserData();
       final userData = await FacebookAuth.instance.getUserData();
       // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
       _accessToken = accessToken;
-      setState(() {
-        _userData = userData;
-      });
     }
   }
 
-  void _printCredentials() {
-    print(
-      _accessToken!.toJson(),
-    );
-  }
 
   Future<void> _handleSignInFB() async {
-    final LoginResult result = await FacebookAuth.instance
-        .login(); // by default we request the email and the public profile
-
-    // loginBehavior is only supported for Android devices, for ios it will be ignored
-    // final result = await FacebookAuth.instance.login(
-    //   permissions: ['email', 'public_profile', 'user_birthday', 'user_friends', 'user_gender', 'user_link'],
-    //   loginBehavior: LoginBehavior
-    //       .DIALOG_ONLY, // (only android) show an authentication dialog instead of redirecting to facebook app
-    // );
-
+    String message = "";
+    final LoginResult result = await FacebookAuth.instance.login();
     if (result.status == LoginStatus.success) {
-      _accessToken = result.accessToken;
-      _printCredentials();
-      // get the user data
-      // by default we get the userId, email,name and picture
-      final userData = await FacebookAuth.instance.getUserData();
-      // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
-      _userData = userData;
+      final token = result.accessToken?.token;
+      final data = await authService.loginByFbAuth(token!);
+      if (data['success'] == false) {
+        message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
+      } else {
+        prefs.setString('access_token', data['tokens']["access"]["token"]);
+        prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
+        prefs.setString('user', json.encode(data['user']));
+        Navigator.popAndPushNamed(context, '/');
+        return;
+      }
     } else {
-      print(result.status);
-      print(result.message);
+      print(result);
+      message = "Đăng nhập thất bại vui lòng thử lại.";
     }
-
-    setState(() {
-      _checking = false;
-    });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _handleSignInGG() async {
+    String message = "";
     try {
       final response = await _googleSignIn.signIn();
+      final googleAuth = await response?.authentication;
+      final token = googleAuth?.accessToken;
+      final data = await authService.loginByMailAuth(token!);
+      if (data['success'] == false) {
+        message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
+      } else {
+        prefs.setString('access_token', data['tokens']["access"]["token"]);
+        prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
+        prefs.setString('user', json.encode(data['user']));
+        Navigator.popAndPushNamed(context, '/');
+        return;
+      }
     } catch (error) {
       print(error);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Đăng nhập thất bại vui lòng thử lại.")));
+      message = "Đăng nhập thất bại vui lòng thử lại.";
     }
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _toggleObscured() {

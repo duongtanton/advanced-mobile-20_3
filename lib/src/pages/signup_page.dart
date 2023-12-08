@@ -32,11 +32,15 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
   AuthService authService = AuthService();
 
   @override
-  void initState() async {
+  void initState()  {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _asyncMethod();
+    });
+  }
+  _asyncMethod() async {
     prefs = await SharedPreferences.getInstance();
   }
-
   void _toggleObscured() {
     setState(() {
       _obscured = !_obscured;

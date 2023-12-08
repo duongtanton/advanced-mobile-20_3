@@ -21,12 +21,12 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      final token = jsonDecode(response.body)['token'];
+      final tokens = jsonDecode(response.body)['tokens'];
       final user = jsonDecode(response.body)['user'];
       return {
         'success': true,
         'message': 'Login successful',
-        'token': token,
+        'tokens': tokens,
         'user': user
       };
     } else {
@@ -43,12 +43,12 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      final token = jsonDecode(response.body)['token'];
+      final tokens = jsonDecode(response.body)['tokens'];
       final user = jsonDecode(response.body)['user'];
       return {
         'success': true,
         'message': 'Login successful',
-        'token': token,
+        'tokens': tokens,
         'user': user
       };
     }
@@ -78,6 +78,49 @@ class AuthService {
         'success': true,
         'message': 'Login successful',
         'token': token,
+        'user': user
+      };
+    } else {
+      return {'success': false, 'message': 'Login failed'};
+    }
+  }
+
+  Future<Map<String, dynamic>> loginByMailAuth(String token) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/google'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'access_token': token}),
+    );
+
+    if (response.statusCode == 200) {
+      // Assuming your API returns a token upon successful login
+      final tokens = jsonDecode(response.body)['tokens'];
+      final user = jsonDecode(response.body)['user'];
+      return {
+        'success': true,
+        'message': 'Login successful',
+        'tokens': tokens,
+        'user': user
+      };
+    } else {
+      return {'success': false, 'message': 'Login failed'};
+    }
+  }
+  Future<Map<String, dynamic>> loginByFbAuth(String token) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/facebook'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'access_token': token}),
+    );
+
+    if (response.statusCode == 200) {
+      // Assuming your API returns a token upon successful login
+      final tokens = jsonDecode(response.body)['tokens'];
+      final user = jsonDecode(response.body)['user'];
+      return {
+        'success': true,
+        'message': 'Login successful',
+        'tokens': tokens,
         'user': user
       };
     } else {
