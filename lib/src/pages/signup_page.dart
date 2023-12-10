@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobile_20120598/src/components/header.dart';
 import 'package:mobile_20120598/src/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,21 +30,30 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
+  late GoogleSignIn _googleSignIn;
 
   late SharedPreferences prefs;
 
   AuthService authService = AuthService();
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _asyncMethod();
     });
   }
+
   _asyncMethod() async {
     prefs = await SharedPreferences.getInstance();
+    _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
   }
+
   void _toggleObscured() {
     setState(() {
       _obscured = !_obscured;
@@ -83,7 +96,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
             _emailController.text, _emailController.text);
       } else {
         response = await authService.registerByMail(
-            _emailController.text, _emailController.text);
+            _emailController.text, _passwordController.text);
       }
       if (response['success'] == false) {
         message = "Vui lòng kiểm tra lại email và mật khẩu của bạn";
@@ -108,6 +121,51 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
     ));
   }
 
+  Future<void> _handleSignUpGG() async {
+    String message = "";
+    try {
+      final response = await _googleSignIn.signIn();
+      final googleAuth = await response?.authentication;
+      final token = googleAuth?.accessToken;
+      final data = await authService.loginByMailAuth(token!);
+      if (data['success'] == false) {
+        message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
+      } else {
+        prefs.setString('access_token', data['tokens']["access"]["token"]);
+        prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
+        prefs.setString('user', json.encode(data['user']));
+        Navigator.popAndPushNamed(context, '/');
+        return;
+      }
+    } catch (error) {
+      print(error);
+      message = "Đăng nhập thất bại vui lòng thử lại.";
+    }
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+  Future<void> _handleSignInFB() async {
+    String message = "";
+    final LoginResult result = await FacebookAuth.instance.login();
+    if (result.status == LoginStatus.success) {
+      final token = result.accessToken?.token;
+      final data = await authService.loginByFbAuth(token!);
+      if (data['success'] == false) {
+        message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
+      } else {
+        prefs.setString('access_token', data['tokens']["access"]["token"]);
+        prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
+        prefs.setString('user', json.encode(data['user']));
+        Navigator.popAndPushNamed(context, '/');
+        return;
+      }
+    } else {
+      print(result);
+      message = "Đăng nhập thất bại vui lòng thử lại.";
+    }
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,7 +217,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
                       const Padding(padding: EdgeInsets.only(top: 20)),
                       TextField(
                         enabled: step == "signup",
-                        obscureText: _obscured,
+                        obscureText: !_obscured,
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
@@ -177,7 +235,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
                       const Padding(padding: EdgeInsets.only(top: 20)),
                       TextField(
                         enabled: step == "signup",
-                        obscureText: _reobscured,
+                        obscureText: !_reobscured,
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
@@ -223,22 +281,14 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    currentMode = "fb";
-                                  });
-                                },
+                                onTap: _handleSignInFB,
                                 child: SvgPicture.asset("assets/images/fb.svg",
                                     height: 40),
                               ),
                               const Padding(
                                   padding: EdgeInsets.only(left: 6, right: 6)),
                               GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    currentMode = "gg";
-                                  });
-                                },
+                                onTap: _handleSignUpGG ,
                                 child: SvgPicture.asset("assets/images/gg.svg",
                                     height: 40),
                               ),
@@ -247,7 +297,11 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
                               GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      currentMode = "mb";
+                                      if (currentMode == "mb") {
+                                        currentMode = "mail";
+                                      } else {
+                                        currentMode = "mb";
+                                      }
                                     });
                                   },
                                   child: SvgPicture.asset(

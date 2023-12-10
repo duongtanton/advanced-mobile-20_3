@@ -20,13 +20,12 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   bool _obscured = false;
   String currentMode = "mail";
+  String step = "signin";
 
   final textFieldFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   late GoogleSignIn _googleSignIn;
-
-  AccessToken? _accessToken;
 
   late SharedPreferences prefs;
 
@@ -55,13 +54,8 @@ class _SignInPageState extends State<SignInPage> {
     final accessToken = await FacebookAuth.instance.accessToken;
     if (accessToken != null) {
       print("is Logged:::: ${accessToken.toJson()}");
-      // now you can call to  FacebookAuth.instance.getUserData();
-      final userData = await FacebookAuth.instance.getUserData();
-      // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
-      _accessToken = accessToken;
     }
   }
-
 
   Future<void> _handleSignInFB() async {
     String message = "";
@@ -143,13 +137,28 @@ class _SignInPageState extends State<SignInPage> {
     ));
   }
 
-  void _forgetPassword() {
+  void _forgetPassword() async {
+    if (step == "confirm") {
+      setState(() {
+        step = "signin";
+      });
+    } else {
+      setState(() {
+        step = "confirm";
+      });
+    }
     String message = "";
     if (_emailController.text.isEmpty) {
       message = "Bạn phải nhập email.";
     } else {
+      final response = await authService.forgetPassword(_emailController.text);
       //handle send email
-      message = "Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn.";
+      if (response['success'] == true) {
+        message = "Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn.";
+        step = "confirm";
+      } else {
+        message = "Đã xẫy ra lỗi vui lòng thử lại sau.";
+      }
     }
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
@@ -220,12 +229,6 @@ class _SignInPageState extends State<SignInPage> {
                                   size: 24,
                                 ))),
                         controller: _passwordController,
-                        validator: (value) {
-                          if (value!.length < 9) {
-                            return 'Phone number must be 9 digits or longer';
-                          }
-                          return null;
-                        },
                       ),
                       const Padding(padding: EdgeInsets.only(top: 50)),
                       GestureDetector(
@@ -258,22 +261,14 @@ class _SignInPageState extends State<SignInPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                onTap: () {
-                                  _handleSignInFB();
-                                  currentMode = "fb";
-                                },
+                                onTap: _handleSignInFB,
                                 child: SvgPicture.asset("assets/images/fb.svg",
                                     height: 40),
                               ),
                               const Padding(
                                   padding: EdgeInsets.only(left: 6, right: 6)),
                               GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    currentMode = "gg";
-                                  });
-                                  _handleSignInGG();
-                                },
+                                onTap: _handleSignInGG,
                                 child: SvgPicture.asset("assets/images/gg.svg",
                                     height: 40),
                               ),
@@ -282,7 +277,11 @@ class _SignInPageState extends State<SignInPage> {
                               GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      currentMode = "mb";
+                                      if (currentMode == "mb") {
+                                        currentMode = "mail";
+                                      } else {
+                                        currentMode = "mb";
+                                      }
                                     });
                                   },
                                   child: SvgPicture.asset(

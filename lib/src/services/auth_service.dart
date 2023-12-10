@@ -25,7 +25,7 @@ class AuthService {
       final user = jsonDecode(response.body)['user'];
       return {
         'success': true,
-        'message': 'Login successful',
+        'message': 'Register successful',
         'tokens': tokens,
         'user': user
       };
@@ -47,7 +47,7 @@ class AuthService {
       final user = jsonDecode(response.body)['user'];
       return {
         'success': true,
-        'message': 'Login successful',
+        'message': 'Register successful',
         'tokens': tokens,
         'user': user
       };
@@ -72,12 +72,12 @@ class AuthService {
 
     if (response.statusCode == 200) {
       // Assuming your API returns a token upon successful login
-      final token = jsonDecode(response.body)['token'];
+      final token = jsonDecode(response.body)['tokens'];
       final user = jsonDecode(response.body)['user'];
       return {
         'success': true,
         'message': 'Login successful',
-        'token': token,
+        'tokens': token,
         'user': user
       };
     } else {
@@ -138,12 +138,12 @@ class AuthService {
 
     if (response.statusCode == 200) {
       // Assuming your API returns a token upon successful login
-      final token = jsonDecode(response.body)['token'];
+      final token = jsonDecode(response.body)['tokens'];
       final user = jsonDecode(response.body)['user'];
       return {
         'success': true,
         'message': 'Login successful',
-        'token': token,
+        'tokens': token,
         'user': user
       };
     } else {
@@ -166,7 +166,28 @@ class AuthService {
     if (response.statusCode == 200) {
       return {
         'success': true,
-        'message': 'Login successful',
+        'message': 'Send otp successful',
+      };
+    } else {
+      return {'success': false, 'message': 'Login failed'};
+    }
+  }
+  Future<Map<String, dynamic>> forgetPassword(String mail) async {
+    SharedPreferences prefers = await SharedPreferences.getInstance();
+    final auth_token = prefers.getString('access_token');
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/forgotPassword'),
+      headers: {
+        'Content-Type': 'application/json',
+        'auth_token': auth_token.toString()
+      },
+      body: jsonEncode({'email': mail}),
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Send email successful',
       };
     } else {
       return {'success': false, 'message': 'Login failed'};
