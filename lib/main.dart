@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile_20120598/src/constants/country.dart';
 import 'package:mobile_20120598/src/pages/booking_page.dart';
 import 'package:mobile_20120598/src/pages/course_info_page.dart';
 import 'package:mobile_20120598/src/pages/courses_page.dart';
@@ -9,11 +11,12 @@ import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/signup_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future main() async {
-  const environment = String.fromEnvironment('FLAVOR', defaultValue: 'development');
+  const environment =
+      String.fromEnvironment('FLAVOR', defaultValue: 'development');
   await dotenv.load(fileName: '.env.$environment');
+  await CountryService.loadCountries();
 
   runApp(const MyApp());
 }

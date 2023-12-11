@@ -24,7 +24,9 @@ class _HomePageState extends State<HomePage> {
   TextEditingController startTime = TextEditingController();
   TextEditingController endTime = TextEditingController();
   TutorService tutorService = TutorService();
-  late final data;
+  int currentPage = 1;
+  int totalPage = 1;
+  late var data = null;
 
   @override
   void initState() {
@@ -39,168 +41,199 @@ class _HomePageState extends State<HomePage> {
     data = (await tutorService.getTutors(1, 10))["data"];
   }
 
+  _handleChangePage(index) async {
+    data = (await tutorService.getTutors(index + 1, 10))["data"];
+    setState(() {
+      currentPage = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tutors = data?["tutors"]?["rows"]?.map((item) => Container(
-          padding:
-              const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 3),
-            ),
-          ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Column(
+    var tutors = [];
+    if (null != data &&
+        null != data["tutors"] &&
+        null != data["tutors"]["rows"]) {
+      tutors = data["tutors"]["rows"];
+      totalPage = data["tutors"]["count"];
+    }
+    List<Widget> tutorWidgets = tutors
+        .map((item) => Container(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 20, left: 20, right: 20),
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3),
+                ),
+              ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(80),
-                    child: const Image(
-                      image: AssetImage("assets/images/teacher.jpg"),
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                    ),
+                  Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(80),
+                        child: null != item["avatar"]
+                            ? Image.network(item["avatar"],
+                                height: 80, width: 80, fit: BoxFit.cover,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                return Image.asset(
+                                  "assets/images/teacher.jpg",
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                );
+                              })
+                            : Image.asset(
+                                "assets/images/teacher.jpg",
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Keegan",
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        item["name"],
+                        style: TextStyle(
+                            fontSize: 26, fontWeight: FontWeight.w600),
+                      ),
+                      Icon(Icons.favorite_border),
+                      Icon(Icons.favorite, color: Colors.red)
+                    ],
                   ),
-                  Icon(Icons.favorite_border),
-                  Icon(Icons.favorite, color: Colors.red)
-                ],
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    "assets/images/vi.svg",
-                    height: 26,
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/images/vi.svg",
+                        height: 26,
+                      ),
+                      const Padding(padding: EdgeInsets.only(left: 10)),
+                      Text(item['country'] ?? "")
+                    ],
                   ),
-                  const Padding(padding: EdgeInsets.only(left: 10)),
-                  const Text("Vietnam")
-                ],
-              ),
-              const Padding(padding: EdgeInsets.only(top: 4)),
-              const Row(
-                children: [
-                  Icon(
-                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
-                    color: Colors.amber,
-                    size: 18,
+                  const Padding(padding: EdgeInsets.only(top: 4)),
+                  const Row(
+                    children: [
+                      Icon(
+                        IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                        color: Colors.amber,
+                        size: 18,
+                      ),
+                      Icon(
+                        IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                        color: Colors.amber,
+                        size: 18,
+                      ),
+                      Icon(
+                        IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                        color: Colors.amber,
+                        size: 18,
+                      ),
+                      Icon(
+                        IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                        color: Colors.amber,
+                        size: 18,
+                      ),
+                      Icon(
+                        IconData(0xe5f9, fontFamily: 'MaterialIcons'),
+                        size: 18,
+                      )
+                    ],
                   ),
-                  Icon(
-                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
-                    color: Colors.amber,
-                    size: 18,
+                  const Padding(padding: EdgeInsets.only(top: 26)),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 6,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.only(
+                              top: 8, right: 12, left: 12, bottom: 8),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            color: Color.fromRGBO(221, 234, 254, 1),
+                          ),
+                          child: const Text("Tất cả",
+                              style: TextStyle(color: Colors.blue))),
+                      Container(
+                        padding: const EdgeInsets.only(
+                            top: 8, right: 12, left: 12, bottom: 8),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          color: Color.fromRGBO(221, 234, 254, 1),
+                        ),
+                        child: const Text("Tiếng anh cho trẻ em",
+                            style: TextStyle(color: Colors.blue)),
+                      ),
+                      Container(
+                          padding: const EdgeInsets.only(
+                              top: 8, right: 12, left: 12, bottom: 8),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            color: Color.fromRGBO(221, 234, 254, 1),
+                          ),
+                          child: const Text("Tiếng anh cho công việc",
+                              style: TextStyle(color: Colors.blue))),
+                      Container(
+                          padding: const EdgeInsets.only(
+                              top: 8, right: 12, left: 12, bottom: 8),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            color: Color.fromRGBO(221, 234, 254, 1),
+                          ),
+                          child: const Text("Giao tiếp",
+                              style: TextStyle(color: Colors.blue)))
+                    ],
                   ),
-                  Icon(
-                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
-                    color: Colors.amber,
-                    size: 18,
-                  ),
-                  Icon(
-                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
-                    color: Colors.amber,
-                    size: 18,
-                  ),
-                  Icon(
-                    IconData(0xe5f9, fontFamily: 'MaterialIcons'),
-                    size: 18,
+                  const Padding(padding: EdgeInsets.only(top: 10)),
+                  RichText(
+                      overflow: TextOverflow.ellipsis,
+                      strutStyle: const StrutStyle(fontSize: 12.0),
+                      maxLines: 4,
+                      text: TextSpan(
+                          style: TextStyle(color: Colors.black38, height: 1.5),
+                          text: item["bio"] ?? "")),
+                  const Padding(padding: EdgeInsets.only(top: 20)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.popAndPushNamed(context, "/booking");
+                        },
+                        icon: const Icon(
+                          IconData(0xe122, fontFamily: 'MaterialIcons'),
+                          color: Colors.blue,
+                        ),
+                        label: const Text(
+                          "Đặt lịch",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: const BorderSide(color: Colors.blue))),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                        ),
+                      )
+                    ],
                   )
                 ],
               ),
-              const Padding(padding: EdgeInsets.only(top: 26)),
-              Wrap(
-                spacing: 12,
-                runSpacing: 6,
-                children: [
-                  Container(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, left: 12, bottom: 8),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Color.fromRGBO(221, 234, 254, 1),
-                      ),
-                      child: const Text("Tất cả",
-                          style: TextStyle(color: Colors.blue))),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        top: 8, right: 12, left: 12, bottom: 8),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      color: Color.fromRGBO(221, 234, 254, 1),
-                    ),
-                    child: const Text("Tiếng anh cho trẻ em",
-                        style: TextStyle(color: Colors.blue)),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, left: 12, bottom: 8),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Color.fromRGBO(221, 234, 254, 1),
-                      ),
-                      child: const Text("Tiếng anh cho công việc",
-                          style: TextStyle(color: Colors.blue))),
-                  Container(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, left: 12, bottom: 8),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Color.fromRGBO(221, 234, 254, 1),
-                      ),
-                      child: const Text("Giao tiếp",
-                          style: TextStyle(color: Colors.blue)))
-                ],
-              ),
-              const Padding(padding: EdgeInsets.only(top: 10)),
-              RichText(
-                overflow: TextOverflow.ellipsis,
-                strutStyle: const StrutStyle(fontSize: 12.0),
-                maxLines: 4,
-                text: const TextSpan(
-                    style: TextStyle(color: Colors.black38, height: 1.5),
-                    text:
-                        'I am passionate about running and fitness, I often compete in trail/mountain running events and I love pushing myself. I am training to one day take part in ultra-endurance events. I also enjoy watching rugby on the weekends, reading and watching podcasts on Youtube. My most memorable life experience would be living in and traveling around Southeast Asia.'),
-              ),
-              const Padding(padding: EdgeInsets.only(top: 20)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.popAndPushNamed(context, "/booking");
-                    },
-                    icon: const Icon(
-                      IconData(0xe122, fontFamily: 'MaterialIcons'),
-                      color: Colors.blue,
-                    ),
-                    label: const Text(
-                      "Đặt lịch",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: const BorderSide(color: Colors.blue))),
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ));
+            ))
+        .cast<Widget>()
+        .toList();
     return Scaffold(
       body: Column(
         children: [
@@ -452,12 +485,11 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w700, fontSize: 22)),
                       ]),
                       const Padding(padding: EdgeInsets.only(top: 20)),
+                      ...tutorWidgets,
                       const Padding(padding: EdgeInsets.only(top: 30)),
                       NumberPaginator(
-                        numberPages: 10,
-                        onPageChange: (int index) {
-                          // handle page change...
-                        },
+                        numberPages: totalPage,
+                        onPageChange: _handleChangePage,
                       )
                     ],
                   ),
