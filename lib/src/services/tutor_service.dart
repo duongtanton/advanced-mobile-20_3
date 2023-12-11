@@ -12,17 +12,35 @@ class TutorService {
         fallback: 'https://sandbox.api.lettutor.com');
   }
 
-  Future<Map<String, dynamic>> getTutors(int page, int perPage) async {
+  Future<Map<String, dynamic>> getTutors(
+      {page = 1,
+      perPage = 10,
+      search,
+      nationality = const [],
+      date,
+      tutoringTimeAvailableStart,
+      tutoringTimeAvailableEnd}) async {
     final tokens = await UtilService.getTokens();
     if (tokens['access_token'] == null) {
       return {'success': false, 'message': 'Access token not found'};
     }
-    final response = await http.get(
-      Uri.parse('$baseUrl/tutor/more?perPage=$perPage&page=$page'),
+    Map<String, dynamic> body = {
+      'page': page,
+      'perPage': perPage,
+      'date': date,
+      'search': search,
+      'tutoringTimeAvailable': [
+        tutoringTimeAvailableStart,
+        tutoringTimeAvailableEnd
+      ]
+    };
+    final response = await http.post(
+      Uri.parse('$baseUrl/tutor/search'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${tokens['access_token']}',
       },
+      body: jsonEncode(body),
     );
 
     if (response.statusCode == 200) {

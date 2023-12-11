@@ -1,7 +1,10 @@
+import 'dart:async';
+
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_20120598/src/components/header.dart';
+import 'package:mobile_20120598/src/constants/country.dart';
 import 'package:mobile_20120598/src/services/tutor_service.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:time_range_picker/time_range_picker.dart';
@@ -23,10 +26,13 @@ class _HomePageState extends State<HomePage> {
   TextEditingController dateInput = TextEditingController();
   TextEditingController startTime = TextEditingController();
   TextEditingController endTime = TextEditingController();
+  TextEditingController searchText = TextEditingController();
+  Timer? _debounce;
+
   TutorService tutorService = TutorService();
   int currentPage = 1;
   int totalPage = 1;
-  late var data = null;
+  var tutors = [];
 
   @override
   void initState() {
@@ -37,26 +43,52 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
   _asyncMethod() async {
-    data = (await tutorService.getTutors(1, 10))["data"];
+    var data = (await tutorService.getTutors(
+        page: 1, search: searchText.text))["data"];
+    setState(() {
+      if (null != data) {
+        tutors = data["rows"];
+        totalPage = data["count"];
+      }
+    });
   }
 
   _handleChangePage(index) async {
-    data = (await tutorService.getTutors(index + 1, 10))["data"];
+    var data = (await tutorService.getTutors(page: index + 1))["data"];
+    if (null != data) {
+      tutors = data["rows"];
+      totalPage = data["count"];
+    }
     setState(() {
       currentPage = index;
     });
   }
 
+  _search() async {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      var data = (await tutorService.getTutors(
+        page: 1,
+        search: searchText.text,
+      ))["data"];
+      setState(() {
+        if (null != data) {
+          tutors = data["rows"];
+          totalPage = data["count"];
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var tutors = [];
-    if (null != data &&
-        null != data["tutors"] &&
-        null != data["tutors"]["rows"]) {
-      tutors = data["tutors"]["rows"];
-      totalPage = data["tutors"]["count"];
-    }
     List<Widget> tutorWidgets = tutors
         .map((item) => Container(
               padding: const EdgeInsets.only(
@@ -103,21 +135,24 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                         item["name"],
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 26, fontWeight: FontWeight.w600),
                       ),
-                      Icon(Icons.favorite_border),
-                      Icon(Icons.favorite, color: Colors.red)
+                      true
+                          ? const Icon(Icons.favorite, color: Colors.red)
+                          : const Icon(Icons.favorite_border),
                     ],
                   ),
                   Row(
                     children: [
-                      SvgPicture.asset(
-                        "assets/images/vi.svg",
+                      CountryFlag.fromCountryCode(
+                        item['country'] ?? "VN",
                         height: 26,
+                        width: 30,
+                        borderRadius: 8,
                       ),
                       const Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(item['country'] ?? "")
+                      Text(CountryService.countriesMap[item['country']] ?? "")
                     ],
                   ),
                   const Padding(padding: EdgeInsets.only(top: 4)),
@@ -281,13 +316,16 @@ class _HomePageState extends State<HomePage> {
                         const Padding(padding: EdgeInsets.only(bottom: 20)),
                         Row(
                           children: [
-                            const Expanded(
+                            Expanded(
                               child: Padding(
-                                  padding: EdgeInsets.only(bottom: 18),
+                                  padding: const EdgeInsets.only(bottom: 18),
                                   child: TextField(
-                                    decoration: InputDecoration(
-                                        hintText: "Nhập tên gia sư..."),
-                                  )),
+                                      decoration: const InputDecoration(
+                                          hintText: "Nhập tên gia sư..."),
+                                      controller: searchText,
+                                      onChanged: (text) {
+                                        _search();
+                                      })),
                             ),
                             const Padding(padding: EdgeInsets.only(right: 10)),
                             DropdownButton<String>(

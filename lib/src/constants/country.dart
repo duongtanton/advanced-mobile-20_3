@@ -6,7 +6,7 @@ class CountryService {
   static Map<String, String> countriesMap = {};
 
   static Future<void> loadCountries() async {
-    String data = await rootBundle.loadString('assets/data/countries.json');
+    String data = await rootBundle.loadString('assets/datas/countries.json');
     List<dynamic> countriesJson = jsonDecode(data);
     Map<String, String> map = {
       for (var country in countriesJson) country["code"]: country["name"]

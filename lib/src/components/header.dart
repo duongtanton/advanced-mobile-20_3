@@ -23,17 +23,17 @@ class Header extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () => Navigator.popAndPushNamed(context, "/"),
-                child: SvgPicture.asset("assets/images/logo.svg", width: 180),
+                child: SvgPicture.asset("assets/images/logo.svg", width: 180, height: 40),
               ),
               Row(
                 children: [
                   IconButton(
                       onPressed: () => {},
-                      icon: SvgPicture.asset("assets/images/vi.svg")),
+                      icon: SvgPicture.asset("assets/images/vi.svg", width: 40, height: 40)),
                   if (login)
                     IconButton(
                         onPressed: () => {},
-                        icon: Image.asset("assets/images/setting.png"))
+                        icon: Image.asset("assets/images/setting.png", width: 40, height: 40)),
                 ],
               )
             ],
