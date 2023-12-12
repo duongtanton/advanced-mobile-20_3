@@ -19,8 +19,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> list = <String>['Nước ngoài', 'Việt Nam', 'Bản địa'];
-  String dropdownValue = "Nước ngoài";
+  List<dynamic> locations = <dynamic>[
+    {'name': 'Quốc gia', 'value': 'all'},
+    {'name': 'Việt Nam', 'value': 'isVietnamese'},
+    {'name': 'Bản địa', 'value': 'isNative'},
+    {'name': 'Nước ngoài', 'value': 'onboarded'}
+  ];
+  List<dynamic> specialties = <dynamic>[
+    {'name': 'Tất cả', 'value': 'all'},
+    {'name': 'Tiếng anh cho trẻ em', 'value': 'english-for-kids'},
+    {'name': 'Tiếng anh cho công việc', 'value': 'business-english'},
+    {'name': 'Giao tiếp', 'value': 'conversational-english'},
+    {'name': 'STARTERS', 'value': 'starters'},
+    {'name': 'MOVERS', 'value': 'movers'},
+    {'name': 'FLYERS', 'value': 'flyers'},
+    {'name': 'PET', 'value': 'ket'},
+    {'name': 'IELTS', 'value': 'pet'},
+    {'name': 'TOEFL', 'value': 'toefl'},
+    {'name': 'TOEIC', 'value': 'toeic'},
+  ];
+  String selectedLocation = 'all';
+  String selectedSpecialty = 'all';
   TimeRange timeRange =
       TimeRange(startTime: TimeOfDay.now(), endTime: TimeOfDay.now());
   TextEditingController dateInput = TextEditingController();
@@ -50,33 +69,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   _asyncMethod() async {
-    var data = (await tutorService.getTutors(
-        page: 1, search: searchText.text))["data"];
-    setState(() {
-      if (null != data) {
-        tutors = data["rows"];
-        totalPage = data["count"];
-      }
-    });
+    await _search();
   }
 
   _handleChangePage(index) async {
-    var data = (await tutorService.getTutors(page: index + 1))["data"];
-    if (null != data) {
-      tutors = data["rows"];
-      totalPage = data["count"];
-    }
-    setState(() {
-      currentPage = index;
-    });
+    currentPage = index + 1;
+    _search();
   }
 
   _search() async {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    _debounce = Timer(const Duration(milliseconds: 800), () async {
       var data = (await tutorService.getTutors(
-        page: 1,
+        page: currentPage,
         search: searchText.text,
+        nationality: selectedLocation,
+        specialties: selectedSpecialty,
+        date: dateInput.text,
+        tutoringTimeAvailableStart: startTime.text,
+        tutoringTimeAvailableEnd: endTime.text,
       ))["data"];
       setState(() {
         if (null != data) {
@@ -267,7 +278,36 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ))
-        .cast<Widget>()
+        .toList();
+    List<DropdownMenuItem<String>> locationWidgets = locations
+        .map((item) => DropdownMenuItem<String>(
+              value: item["value"],
+              child: Text(item["name"]),
+            ))
+        .toList();
+
+    List<Widget> specialtyWidgets = specialties
+        .map(
+          (item) => GestureDetector(
+              onTap: () {
+                selectedSpecialty = item["value"];
+                _search();
+              },
+              child: Container(
+                  padding: const EdgeInsets.only(
+                      top: 8, right: 12, left: 12, bottom: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(16)),
+                    color: item["value"] == selectedSpecialty
+                        ? const Color.fromRGBO(221, 234, 254, 1)
+                        : const Color.fromRGBO(228, 230, 235, 1),
+                  ),
+                  child: Text(item["name"],
+                      style: TextStyle(
+                          color: item!["value"] == selectedSpecialty
+                              ? Colors.blue
+                              : const Color.fromRGBO(100, 100, 100, 1))))),
+        )
         .toList();
     return Scaffold(
       body: Column(
@@ -329,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const Padding(padding: EdgeInsets.only(right: 10)),
                             DropdownButton<String>(
-                              value: dropdownValue,
+                              value: selectedLocation,
                               padding: const EdgeInsets.only(bottom: 0),
                               icon: const Icon(Icons.arrow_downward),
                               underline: Container(
@@ -338,16 +378,11 @@ class _HomePageState extends State<HomePage> {
                               ),
                               onChanged: (String? value) {
                                 setState(() {
-                                  dropdownValue = value!;
+                                  selectedLocation = value!;
+                                  _search();
                                 });
                               },
-                              items: list.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                              items: locationWidgets,
                             )
                           ],
                         ),
@@ -357,34 +392,24 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                                 child: TextField(
                               controller: dateInput,
-                              //editing controller of this TextField
                               decoration: const InputDecoration(
                                   icon: Icon(Icons.calendar_today),
-                                  //icon of text field
-                                  labelText: "Enter Date" //label text of field
-                                  ),
+                                  labelText: "Enter Date"),
                               readOnly: true,
-                              //set it true, so that user will not able to edit text
                               onTap: () async {
                                 DateTime? pickedDate = await showDatePicker(
                                     context: context,
                                     initialDate: DateTime.now(),
                                     firstDate: DateTime(1950),
-                                    //DateTime.now() - not to allow to choose before today.
                                     lastDate: DateTime(2100));
-
                                 if (pickedDate != null) {
-                                  print(
-                                      pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                                   String formattedDate =
                                       DateFormat('yyyy-MM-dd')
                                           .format(pickedDate);
-                                  print(
-                                      formattedDate); //formatted date output using intl package =>  2021-03-16
                                   setState(() {
-                                    dateInput.text =
-                                        formattedDate; //set output date to TextField value.
+                                    dateInput.text = formattedDate;
                                   });
+                                  _search();
                                 } else {}
                               },
                             )),
@@ -403,6 +428,7 @@ class _HomePageState extends State<HomePage> {
                                   startTime.text =
                                       result.startTime.format(context);
                                   endTime.text = result.endTime.format(context);
+                                  _search();
                                 },
                                 decoration: const InputDecoration(
                                     icon: Icon(Icons.timer),
@@ -423,6 +449,7 @@ class _HomePageState extends State<HomePage> {
                                   startTime.text =
                                       result.startTime.format(context);
                                   endTime.text = result.endTime.format(context);
+                                  _search();
                                 },
                                 decoration: const InputDecoration(
                                     icon: Icon(Icons.timer),
@@ -437,77 +464,39 @@ class _HomePageState extends State<HomePage> {
                         Wrap(
                           spacing: 12,
                           runSpacing: 6,
-                          children: [
-                            Container(
-                                padding: const EdgeInsets.only(
-                                    top: 8, right: 12, left: 12, bottom: 8),
-                                decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16)),
-                                  color: Color.fromRGBO(228, 230, 235, 1),
-                                ),
-                                child: const Text("Tất cả",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(100, 100, 100, 1)))),
-                            Container(
+                          children: specialtyWidgets,
+                        ),
+                        const Padding(padding: EdgeInsets.only(top: 14)),
+                        GestureDetector(
+                          onTap: () {
+                            selectedLocation = "all";
+                            selectedSpecialty = "all";
+                            dateInput.text = "";
+                            startTime.text = "";
+                            endTime.text = "";
+                            searchText.text = "";
+                            _search();
+                          },
+                          child: Container(
                               padding: const EdgeInsets.only(
                                   top: 8, right: 12, left: 12, bottom: 8),
                               decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)),
-                                color: Color.fromRGBO(228, 230, 235, 1),
-                              ),
-                              child: const Text("Tiếng anh cho trẻ em",
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16)),
+                                  border: Border(
+                                    top: BorderSide(
+                                        color: Color.fromRGBO(0, 113, 240, 1)),
+                                    bottom: BorderSide(
+                                        color: Color.fromRGBO(0, 113, 240, 1)),
+                                    left: BorderSide(
+                                        color: Color.fromRGBO(0, 113, 240, 1)),
+                                    right: BorderSide(
+                                        color: Color.fromRGBO(0, 113, 240, 1)),
+                                  )),
+                              child: const Text("Đặt lại bộ tìm kiếm",
                                   style: TextStyle(
-                                      color: Color.fromRGBO(100, 100, 100, 1))),
-                            ),
-                            Container(
-                                padding: const EdgeInsets.only(
-                                    top: 8, right: 12, left: 12, bottom: 8),
-                                decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16)),
-                                  color: Color.fromRGBO(228, 230, 235, 1),
-                                ),
-                                child: const Text("Tiếng anh cho công việc",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(100, 100, 100, 1)))),
-                            Container(
-                                padding: const EdgeInsets.only(
-                                    top: 8, right: 12, left: 12, bottom: 8),
-                                decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16)),
-                                  color: Color.fromRGBO(228, 230, 235, 1),
-                                ),
-                                child: const Text("Giao tiếp",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(100, 100, 100, 1))))
-                          ],
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 14)),
-                        Container(
-                            padding: const EdgeInsets.only(
-                                top: 8, right: 12, left: 12, bottom: 8),
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)),
-                                border: Border(
-                                  top: BorderSide(
-                                      color: Color.fromRGBO(0, 113, 240, 1)),
-                                  bottom: BorderSide(
-                                      color: Color.fromRGBO(0, 113, 240, 1)),
-                                  left: BorderSide(
-                                      color: Color.fromRGBO(0, 113, 240, 1)),
-                                  right: BorderSide(
-                                      color: Color.fromRGBO(0, 113, 240, 1)),
-                                )),
-                            child: const Text("Đặt lại bộ tìm kiếm",
-                                style: TextStyle(
-                                    color: Color.fromRGBO(0, 113, 240, 1)))),
+                                      color: Color.fromRGBO(0, 113, 240, 1)))),
+                        )
                       ]),
                 ),
                 const Padding(padding: EdgeInsets.only(top: 14)),
@@ -523,12 +512,18 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w700, fontSize: 22)),
                       ]),
                       const Padding(padding: EdgeInsets.only(top: 20)),
-                      ...tutorWidgets,
+                      totalPage > 0
+                          ? Column(
+                              children: [
+                                ...tutorWidgets,
+                                NumberPaginator(
+                                  numberPages: totalPage,
+                                  onPageChange: _handleChangePage,
+                                )
+                              ],
+                            )
+                          : const Text("Không có kết quả tìm kiếm"),
                       const Padding(padding: EdgeInsets.only(top: 30)),
-                      NumberPaginator(
-                        numberPages: totalPage,
-                        onPageChange: _handleChangePage,
-                      )
                     ],
                   ),
                 )

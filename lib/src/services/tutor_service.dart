@@ -16,7 +16,8 @@ class TutorService {
       {page = 1,
       perPage = 10,
       search,
-      nationality = const [],
+      nationality,
+      specialties,
       date,
       tutoringTimeAvailableStart,
       tutoringTimeAvailableEnd}) async {
@@ -24,15 +25,27 @@ class TutorService {
     if (tokens['access_token'] == null) {
       return {'success': false, 'message': 'Access token not found'};
     }
+    if (null != nationality && "all" != nationality) {
+      if ("onboarded" == nationality) {
+        nationality = {'isNative': false, 'isVietNamese': false};
+      } else {
+        nationality = {nationality: true};
+      }
+    }
     Map<String, dynamic> body = {
       'page': page,
       'perPage': perPage,
-      'date': date,
       'search': search,
-      'tutoringTimeAvailable': [
-        tutoringTimeAvailableStart,
-        tutoringTimeAvailableEnd
-      ]
+      'filters': {
+        'date': date,
+        'nationality': nationality ?? {},
+        'specialties':
+            "all" == specialties || null == specialties ? [] : [specialties],
+        'tutoringTimeAvailable': [
+          tutoringTimeAvailableStart,
+          tutoringTimeAvailableEnd
+        ]
+      },
     };
     final response = await http.post(
       Uri.parse('$baseUrl/tutor/search'),
