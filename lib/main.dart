@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mobile_20120598/src/constants/country.dart';
+import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/pages/booking_page.dart';
 import 'package:mobile_20120598/src/pages/course_info_page.dart';
 import 'package:mobile_20120598/src/pages/courses_page.dart';
@@ -17,7 +17,7 @@ Future main() async {
   const environment =
       String.fromEnvironment('FLAVOR', defaultValue: 'development');
   await dotenv.load(fileName: '.env.$environment');
-  await CountryService.loadCountries();
+  await CommonConstant.loadCountries();
 
   runApp(const MyApp());
 }
@@ -34,40 +34,51 @@ class MyApp extends StatelessWidget {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-                builder: (context) => const HomePage(title: ""));
+                builder: (context) => const HomePage(title: ""),
+                settings: settings);
           case '/sign-in':
             return MaterialPageRoute(
-                builder: (context) => const SignInPage(title: "sign-in"));
+                builder: (context) => const SignInPage(title: "sign-in"),
+                settings: settings);
           case '/sign-up':
             return MaterialPageRoute(
-                builder: (context) => const SignUpPagePage(title: "sign-up"));
+                builder: (context) => const SignUpPagePage(title: "sign-up"),
+                settings: settings);
           case '/booking':
             return MaterialPageRoute(
-                builder: (context) => const BookingPage(title: "booking"));
+                builder: (context) => const BookingPage(title: "booking"),
+                settings: settings);
           case '/schedule':
             return MaterialPageRoute(
-                builder: (context) => const SchedulePage(title: "schedule"));
+                builder: (context) => const SchedulePage(title: "schedule"),
+                settings: settings);
           case '/evaluate':
             return MaterialPageRoute(
-                builder: (context) => const EvaluatePage(title: "evaluate"));
+                builder: (context) => const EvaluatePage(title: "evaluate"),
+                settings: settings);
           case '/courses':
             return MaterialPageRoute(
-                builder: (context) => const CoursesPage(title: "courses"));
+                builder: (context) => const CoursesPage(title: "courses"),
+                settings: settings);
           case '/course-info':
             return MaterialPageRoute(
                 builder: (context) =>
-                    const CourseInfoPage(title: "course-info"));
+                    const CourseInfoPage(title: "course-info"),
+                settings: settings);
           case '/lesson-info':
             return MaterialPageRoute(
                 builder: (context) =>
-                    const LessonInfoPage(title: "lesson-info"));
+                    const LessonInfoPage(title: "lesson-info"),
+                settings: settings);
           case '/video-call':
             return MaterialPageRoute(
-                builder: (context) => const VideoCallPage(title: "video-call"));
+                builder: (context) => const VideoCallPage(title: "video-call"),
+                settings: settings);
           default:
             // Handle unknown routes here
             return MaterialPageRoute(
-                builder: (context) => const ErrorPage(title: "\\error"));
+                builder: (context) => const ErrorPage(title: "\\error"),
+                settings: settings);
         }
       },
     );

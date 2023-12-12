@@ -66,4 +66,28 @@ class TutorService {
       return {'success': false, 'message': 'Cannot get tutors'};
     }
   }
+
+  Future<Map<String, dynamic>> getTutorById(String id) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(
+      Uri.parse('$baseUrl/tutor/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokens['access_token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Register successful',
+        'data': jsonDecode(response.body)
+      };
+    } else {
+      return {'success': false, 'message': 'Cannot get tutor'};
+    }
+  }
 }

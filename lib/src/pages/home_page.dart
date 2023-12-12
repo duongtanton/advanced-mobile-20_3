@@ -4,7 +4,7 @@ import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_20120598/src/components/header.dart';
-import 'package:mobile_20120598/src/constants/country.dart';
+import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/services/tutor_service.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:time_range_picker/time_range_picker.dart';
@@ -24,20 +24,6 @@ class _HomePageState extends State<HomePage> {
     'isVietnamese': 'Việt Nam',
     'isNative': 'Bản địa',
     'onboarded': 'Nước ngoài'
-  };
-  Map<String, String> specialties = {
-    'all': 'Tất cả',
-    'english-for-kids': 'Tiếng anh cho trẻ em',
-    'business-english': 'Tiếng anh cho công việc',
-    'conversational-english': 'Giao tiếp',
-    'starters': 'STARTERS',
-    'movers': 'MOVERS',
-    'flyers': 'FLYERS',
-    'ket': 'KET',
-    'pet': 'PET',
-    'ielts': 'IELTS',
-    'toefl': 'TOEFL',
-    'toeic': 'TOEIC'
   };
 
   String selectedLocation = 'all';
@@ -165,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: 8,
                       ),
                       const Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(CountryService.countriesMap[item['country']] ?? "")
+                      Text(CommonConstant.countryMap[item['country']] ?? "")
                     ],
                   ),
                   const Padding(padding: EdgeInsets.only(top: 4)),
@@ -212,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(16)),
                                       color: Color.fromRGBO(221, 234, 254, 1)),
-                                  child: Text(specialties[item] ?? "",
+                                  child: Text(CommonConstant.specialties[item] ?? "",
                                       style:
                                           const TextStyle(color: Colors.blue))),
                             )
@@ -225,7 +211,8 @@ class _HomePageState extends State<HomePage> {
                       strutStyle: const StrutStyle(fontSize: 12.0),
                       maxLines: 4,
                       text: TextSpan(
-                          style: TextStyle(color: Colors.black38, height: 1.5),
+                          style: const TextStyle(
+                              color: Colors.black38, height: 1.5),
                           text: item["bio"] ?? "")),
                   const Padding(padding: EdgeInsets.only(top: 20)),
                   Row(
@@ -233,7 +220,8 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.popAndPushNamed(context, "/booking");
+                          Navigator.popAndPushNamed(context, "/booking",
+                              arguments: {'tutorId': item["id"]});
                         },
                         icon: const Icon(
                           IconData(0xe122, fontFamily: 'MaterialIcons'),
@@ -266,7 +254,7 @@ class _HomePageState extends State<HomePage> {
             ))
         .toList();
 
-    List<Widget> specialtyWidgets = specialties.entries
+    List<Widget> specialtyWidgets = CommonConstant.specialties.entries
         .map(
           (entry) => GestureDetector(
               onTap: () {
