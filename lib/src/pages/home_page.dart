@@ -19,25 +19,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic> locations = <dynamic>[
-    {'name': 'Quốc gia', 'value': 'all'},
-    {'name': 'Việt Nam', 'value': 'isVietnamese'},
-    {'name': 'Bản địa', 'value': 'isNative'},
-    {'name': 'Nước ngoài', 'value': 'onboarded'}
-  ];
-  List<dynamic> specialties = <dynamic>[
-    {'name': 'Tất cả', 'value': 'all'},
-    {'name': 'Tiếng anh cho trẻ em', 'value': 'english-for-kids'},
-    {'name': 'Tiếng anh cho công việc', 'value': 'business-english'},
-    {'name': 'Giao tiếp', 'value': 'conversational-english'},
-    {'name': 'STARTERS', 'value': 'starters'},
-    {'name': 'MOVERS', 'value': 'movers'},
-    {'name': 'FLYERS', 'value': 'flyers'},
-    {'name': 'PET', 'value': 'ket'},
-    {'name': 'IELTS', 'value': 'pet'},
-    {'name': 'TOEFL', 'value': 'toefl'},
-    {'name': 'TOEIC', 'value': 'toeic'},
-  ];
+  Map<String, String> locations = {
+    'all': 'Quốc gia',
+    'isVietnamese': 'Việt Nam',
+    'isNative': 'Bản địa',
+    'onboarded': 'Nước ngoài'
+  };
+  Map<String, String> specialties = {
+    'all': 'Tất cả',
+    'english-for-kids': 'Tiếng anh cho trẻ em',
+    'business-english': 'Tiếng anh cho công việc',
+    'conversational-english': 'Giao tiếp',
+    'starters': 'STARTERS',
+    'movers': 'MOVERS',
+    'flyers': 'FLYERS',
+    'ket': 'KET',
+    'pet': 'PET',
+    'ielts': 'IELTS',
+    'toefl': 'TOEFL',
+    'toeic': 'TOEIC'
+  };
+
   String selectedLocation = 'all';
   String selectedSpecialty = 'all';
   TimeRange timeRange =
@@ -199,45 +201,23 @@ class _HomePageState extends State<HomePage> {
                   Wrap(
                     spacing: 12,
                     runSpacing: 6,
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.only(
-                              top: 8, right: 12, left: 12, bottom: 8),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            color: Color.fromRGBO(221, 234, 254, 1),
-                          ),
-                          child: const Text("Tất cả",
-                              style: TextStyle(color: Colors.blue))),
-                      Container(
-                        padding: const EdgeInsets.only(
-                            top: 8, right: 12, left: 12, bottom: 8),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          color: Color.fromRGBO(221, 234, 254, 1),
-                        ),
-                        child: const Text("Tiếng anh cho trẻ em",
-                            style: TextStyle(color: Colors.blue)),
-                      ),
-                      Container(
-                          padding: const EdgeInsets.only(
-                              top: 8, right: 12, left: 12, bottom: 8),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            color: Color.fromRGBO(221, 234, 254, 1),
-                          ),
-                          child: const Text("Tiếng anh cho công việc",
-                              style: TextStyle(color: Colors.blue))),
-                      Container(
-                          padding: const EdgeInsets.only(
-                              top: 8, right: 12, left: 12, bottom: 8),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            color: Color.fromRGBO(221, 234, 254, 1),
-                          ),
-                          child: const Text("Giao tiếp",
-                              style: TextStyle(color: Colors.blue)))
-                    ],
+                    children: null != item["specialties"]
+                        ? item["specialties"]
+                            .split(',')
+                            .map<Widget>(
+                              (item) => Container(
+                                  padding: const EdgeInsets.only(
+                                      top: 8, right: 12, left: 12, bottom: 8),
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(16)),
+                                      color: Color.fromRGBO(221, 234, 254, 1)),
+                                  child: Text(specialties[item] ?? "",
+                                      style:
+                                          const TextStyle(color: Colors.blue))),
+                            )
+                            .toList()
+                        : [],
                   ),
                   const Padding(padding: EdgeInsets.only(top: 10)),
                   RichText(
@@ -279,18 +259,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ))
         .toList();
-    List<DropdownMenuItem<String>> locationWidgets = locations
-        .map((item) => DropdownMenuItem<String>(
-              value: item["value"],
-              child: Text(item["name"]),
+    List<DropdownMenuItem<String>> locationWidgets = locations.entries
+        .map((entry) => DropdownMenuItem<String>(
+              value: entry.key,
+              child: Text(entry.value),
             ))
         .toList();
 
-    List<Widget> specialtyWidgets = specialties
+    List<Widget> specialtyWidgets = specialties.entries
         .map(
-          (item) => GestureDetector(
+          (entry) => GestureDetector(
               onTap: () {
-                selectedSpecialty = item["value"];
+                selectedSpecialty = entry.key;
                 _search();
               },
               child: Container(
@@ -298,13 +278,13 @@ class _HomePageState extends State<HomePage> {
                       top: 8, right: 12, left: 12, bottom: 8),
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(16)),
-                    color: item["value"] == selectedSpecialty
+                    color: entry.key == selectedSpecialty
                         ? const Color.fromRGBO(221, 234, 254, 1)
                         : const Color.fromRGBO(228, 230, 235, 1),
                   ),
-                  child: Text(item["name"],
+                  child: Text(entry.value,
                       style: TextStyle(
-                          color: item!["value"] == selectedSpecialty
+                          color: entry!.key == selectedSpecialty
                               ? Colors.blue
                               : const Color.fromRGBO(100, 100, 100, 1))))),
         )
