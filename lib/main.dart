@@ -12,12 +12,14 @@ import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/signup_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 Future main() async {
   const environment =
       String.fromEnvironment('FLAVOR', defaultValue: 'development');
   await dotenv.load(fileName: '.env.$environment');
   await CommonConstant.loadCountries();
+  timeago.setLocaleMessages('vi', timeago.ViMessages());
 
   runApp(const MyApp());
 }

@@ -22,7 +22,7 @@ class Header extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: () => Navigator.popAndPushNamed(context, "/"),
+                onTap: () => Navigator.pushNamed(context, "/"),
                 child: SvgPicture.asset("assets/images/logo.svg", width: 180, height: 40),
               ),
               Row(

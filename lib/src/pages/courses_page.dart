@@ -40,7 +40,7 @@ class _CoursesPageState extends State<CoursesPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.popAndPushNamed(context, "/course-info");
+                            Navigator.pushNamed(context, "/course-info");
                           },
                           child: Icon(
                             CupertinoIcons.upload_circle,

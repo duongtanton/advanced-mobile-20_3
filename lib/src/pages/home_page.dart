@@ -220,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.popAndPushNamed(context, "/booking",
+                          Navigator.pushNamed(context, "/booking",
                               arguments: {'tutorId': item["id"]});
                         },
                         icon: const Icon(

@@ -153,7 +153,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   numberPages: 10,
                   onPageChange: (int index) {
                     // handle page change...
-                    Navigator.popAndPushNamed(context, "/video-call");
+                    Navigator.pushNamed(context, "/video-call");
                   },
                 )
               ],

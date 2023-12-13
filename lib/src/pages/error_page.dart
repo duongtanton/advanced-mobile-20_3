@@ -46,7 +46,7 @@ class _ErrorPageState extends State<ErrorPage> {
                         const Padding(padding: EdgeInsets.only(top: 20)),
                         ElevatedButton(
                           onPressed: () =>
-                              Navigator.popAndPushNamed(context, "/"),
+                              Navigator.pushNamed(context, "/"),
                           child: const Text("Back to home"),
                         )
                       ].elementAt(0))))

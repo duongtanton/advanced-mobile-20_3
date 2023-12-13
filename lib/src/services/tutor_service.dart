@@ -90,4 +90,54 @@ class TutorService {
       return {'success': false, 'message': 'Cannot get tutor'};
     }
   }
+
+  Future<Map<String, dynamic>> getFeedback({
+    tutorId,
+    page = 1,
+    perPage = 10,
+  }) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(
+      Uri.parse('$baseUrl/feedback/v2/$tutorId?page=$page&perPage=$perPage'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokens['access_token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Register successful',
+        'data': jsonDecode(response.body)?['data']
+      };
+    } else {
+      return {'success': false, 'message': 'Cannot get tutor'};
+    }
+  }
+
+  Future<Map<String, dynamic>> getTutorSchedules(
+      String tutorId, int page) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(
+      Uri.parse('$baseUrl/schedule?tutorId=$tutorId&page=$page'),
+      headers: {'Content-Type': 'application/json'}
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Register successful',
+        'data': jsonDecode(response.body)?['scheduleOfTutor']
+      };
+    } else {
+      return {'success': false, 'message': 'Cannot get tutor'};
+    }
+  }
 }

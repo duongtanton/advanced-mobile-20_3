@@ -69,7 +69,7 @@ class _SignInPageState extends State<SignInPage> {
         prefs.setString('access_token', data['tokens']["access"]["token"]);
         prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
         prefs.setString('user', json.encode(data['user']));
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         return;
       }
     } else {
@@ -93,7 +93,7 @@ class _SignInPageState extends State<SignInPage> {
         prefs.setString('access_token', data['tokens']["access"]["token"]);
         prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
         prefs.setString('user', json.encode(data['user']));
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         return;
       }
     } catch (error) {
@@ -126,7 +126,7 @@ class _SignInPageState extends State<SignInPage> {
         prefs.setString('access_token', response['tokens']["access"]["token"]);
         prefs.setString(
             'refresh_token', response['tokens']["refresh"]["token"]);
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         return;
       }
     } else {
@@ -296,7 +296,7 @@ class _SignInPageState extends State<SignInPage> {
                           const Text("Bạn chưa có tài khoản? "),
                           GestureDetector(
                             onTap: () {
-                              Navigator.popAndPushNamed(context, "/sign-up");
+                              Navigator.pushNamed(context, "/sign-up");
                             },
                             child: const Text(
                               "Đăng ký",

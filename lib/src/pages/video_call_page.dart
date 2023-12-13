@@ -35,7 +35,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
                           numberPages: 10,
                           onPageChange: (int index) {
                             // handle page change...
-                            Navigator.popAndPushNamed(context, "/");
+                            Navigator.pushNamed(context, "/");
                           },
                         )
                       ],

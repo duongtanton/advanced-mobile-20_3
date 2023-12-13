@@ -284,7 +284,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   children: [
                     ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, "/evaluate");
+                        Navigator.pushNamed(context, "/evaluate");
                       },
                       icon: const Icon(
                         IconData(0xe122, fontFamily: 'MaterialIcons'),

@@ -82,7 +82,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
         message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
       } else {
         prefs.setString('token', response['token']);
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         return;
       }
       return;
@@ -109,7 +109,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
         });
 
         if (currentMode == "mail") {
-          Navigator.popAndPushNamed(context, '/');
+          Navigator.pushNamed(context, '/');
         }
         return;
       }
@@ -134,7 +134,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
         prefs.setString('access_token', data['tokens']["access"]["token"]);
         prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
         prefs.setString('user', json.encode(data['user']));
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         return;
       }
     } catch (error) {
@@ -156,7 +156,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
         prefs.setString('access_token', data['tokens']["access"]["token"]);
         prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
         prefs.setString('user', json.encode(data['user']));
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
         return;
       }
     } else {
@@ -316,7 +316,7 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
                           Text("Bạn đã có tài khoản? "),
                           GestureDetector(
                             onTap: () {
-                              Navigator.popAndPushNamed(context, "/sign-in");
+                              Navigator.pushNamed(context, "/sign-in");
                             },
                             child: const Text(
                               "Đăng nhập",
