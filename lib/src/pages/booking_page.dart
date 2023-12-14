@@ -1,9 +1,11 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_20120598/src/components/header.dart';
 import 'package:mobile_20120598/src/components/video.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/dto/schedule_dto.dart';
+import 'package:mobile_20120598/src/services/booking_service.dart';
 import 'package:mobile_20120598/src/services/tutor_service.dart';
 import 'package:mobile_20120598/src/util/common_util.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -21,12 +23,17 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
+  TextEditingController bookingNote = TextEditingController();
+
   TutorService tutorService = TutorService();
+  BookingService bookingService = BookingService();
+
   var tutor = null;
   var feedbacks = null;
   var fbCurrentPage = 1;
   var scCurrentPage = 1;
   var tutorId = null;
+  var showReportForm = false;
   List<Schedule> scheduleOfTutor = [];
 
   @override
@@ -75,14 +82,209 @@ class _BookingPageState extends State<BookingPage> {
     if (data['success']) {
       data['data'].forEach((item) {
         schedules.add(Schedule(
+            item['scheduleDetails'].map((e) => e['id']).toList()[0],
             'Đặt lịch',
-            DateTime.fromMicrosecondsSinceEpoch(item['startTimestamp']* 1000),
-            DateTime.fromMicrosecondsSinceEpoch(item['endTimestamp']* 1000),
-            const Color(0xFF0F8644),
-            false));
+            DateTime.fromMicrosecondsSinceEpoch(item['startTimestamp'] * 1000),
+            DateTime.fromMicrosecondsSinceEpoch(item['endTimestamp'] * 1000),
+            item?['isBooked']
+                ? const Color(0xFF353836)
+                : const Color(0xFF0F8644),
+            false,
+            item!['isBooked'] ?? false));
       });
     }
-    scheduleOfTutor = schedules;
+    setState(() {
+      scheduleOfTutor = schedules;
+    });
+  }
+
+  void _showReportFormPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          title: Text('Báo cáo ${tutor['User']?['name']}',
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          content: SizedBox(
+            height: 400.0,
+            // Your form widgets go here
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text("Bạn đang gặp vấn đề gì"),
+                  const Divider(
+                    height: 20.0,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (bool? value) {},
+                      ),
+                      const SizedBox(width: 8.0),
+                      // Adjust the spacing between Checkbox and Text
+                      const Expanded(
+                        child: Text(
+                          'Gia sư này làm phiền tôi',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (bool? value) {},
+                      ),
+                      const SizedBox(width: 8.0),
+                      // Adjust the spacing between Checkbox and Text
+                      const Expanded(
+                        child: Text(
+                          'Hồ sơ này giả mạo',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: true,
+                        onChanged: (bool? value) {},
+                      ),
+                      const SizedBox(width: 8.0),
+                      // Adjust the spacing between Checkbox and Text
+                      const Expanded(
+                        child: Text(
+                          'Ảnh hồ sơ không phù hợp',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const TextField(
+                    maxLines: 4, //or null
+                    decoration: InputDecoration(
+                      hintText: 'Vui lòng diễn tả chi tiết vấn đề của bạn',
+                      labelStyle: TextStyle(fontSize: 14),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add form submission logic here
+                      Navigator.of(context).pop(); // Close the popup
+                    },
+                    child: const Text('Gửi'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showBookingFormPopup(BuildContext context, dynamic schedule) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          title: const Text('Chi tiết đặt lịch',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          content: SizedBox(
+            height: 320.0,
+            // Your form widgets go here
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text("Thời gian dặt"),
+                  Text(
+                      "   ${DateFormat('HH:mm').format(schedule.from)} - ${DateFormat('HH:mm').format(schedule.to)} ${DateFormat('dd/MM/yyyy').format(schedule.to)}"),
+                  const Divider(
+                    height: 20.0,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 10),
+                  const Row(
+                    children: [
+                      Text(
+                        "Học phí: ",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(width: 8.0),
+                      // Adjust the spacing between Checkbox and Text
+                      Expanded(
+                        child: Text(
+                          '10\$',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Row(
+                    children: [
+                      Text(
+                        "Số dư: ",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(width: 8.0),
+                      // Adjust the spacing between Checkbox and Text
+                      Expanded(
+                        child: Text(
+                          '982 buổi học',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                  TextField(
+                    maxLines: 4, //or null
+                    decoration: const InputDecoration(
+                      hintText: 'Ghi chú dành cho buổi học',
+                      labelStyle: TextStyle(fontSize: 14),
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: bookingNote,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      bookingService.book([schedule.id], bookingNote.text);
+                    },
+                    child: const Text('Đặt'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _toggleFavorite() async {
+    if (null == tutorId) {
+      return;
+    }
+    var response = await tutorService.toggleFavorite(tutorId);
+    if (response['success']) {
+      setState(() {
+        tutor['isFavorite'] = response['data'] != 1;
+      });
+    }
   }
 
   @override
@@ -151,28 +353,38 @@ class _BookingPageState extends State<BookingPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Column(
-              children: [
-                tutor?["isFavorite"]
-                    ? const Icon(Icons.favorite, color: Colors.red)
-                    : const Icon(Icons.favorite_border, color: Colors.blue),
-                const Text(
-                  "Yêu thích",
-                  style: TextStyle(color: Colors.blue),
-                )
-              ],
+            GestureDetector(
+              onTap: () => _toggleFavorite(),
+              child: Column(
+                children: [
+                  tutor?["isFavorite"]
+                      ? const Icon(Icons.favorite, color: Colors.red)
+                      : const Icon(Icons.favorite_border, color: Colors.blue),
+                  const Text(
+                    "Yêu thích",
+                    style: TextStyle(color: Colors.blue),
+                  )
+                ],
+              ),
             ),
-            const Column(
-              children: [
-                Icon(
-                  Icons.report_outlined,
-                  color: Colors.blue,
-                ),
-                Text(
-                  "Báo cáo",
-                  style: TextStyle(color: Colors.blue),
-                )
-              ],
+            GestureDetector(
+              onTap: () => {
+                setState(() {
+                  _showReportFormPopup(context);
+                })
+              },
+              child: const Column(
+                children: [
+                  Icon(
+                    Icons.report_outlined,
+                    color: Colors.blue,
+                  ),
+                  Text(
+                    "Báo cáo",
+                    style: TextStyle(color: Colors.blue),
+                  )
+                ],
+              ),
             )
           ],
         ),
@@ -378,19 +590,43 @@ class _BookingPageState extends State<BookingPage> {
               )
             : const Text("Không có đánh giá nào"),
         const Padding(padding: EdgeInsets.only(top: 40)),
-        SfCalendar(
-          view: CalendarView.week,
-          showTodayButton: true,
-          showDatePickerButton: true,
-          showNavigationArrow: true,
-          minDate: DateTime.now(),
-          dataSource: ScheduleDataSource(scheduleOfTutor),
-          onViewChanged: (ViewChangedDetails viewChangedDetails) {
-            final DateTime date = viewChangedDetails.visibleDates[6];
-            scCurrentPage = (date.difference(DateTime.now()).inDays / 7).ceil() - 1;
-            _getScheduleDataSource();
-          },
-        )
+        SizedBox(
+            height: 800,
+            child: SafeArea(
+                child: SfCalendar(
+              view: CalendarView.week,
+              showTodayButton: true,
+              showDatePickerButton: true,
+              showNavigationArrow: true,
+              firstDayOfWeek: 4,
+              cellEndPadding: 5,
+              timeZone: 'SE Asia Standard Time',
+              timeSlotViewSettings: const TimeSlotViewSettings(
+                  timeInterval: Duration(minutes: 15),
+                  timeIntervalHeight: 100,
+                  timeFormat: 'HH:mm'),
+              minDate: DateTime.now(),
+              onTap: (CalendarTapDetails details) {
+                if (details.targetElement == CalendarElement.appointment) {
+                  if (details.appointments?[0].isBooked) {
+                    return;
+                  }
+                  _showBookingFormPopup(context, details.appointments?[0]);
+                  print('Tapped on appointment: ${details.appointments?[0]}');
+                } else if (details.targetElement ==
+                    CalendarElement.calendarCell) {
+                  print('Tapped on date: ${details.date}');
+                }
+              },
+              dataSource: ScheduleDataSource(scheduleOfTutor),
+              onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                final DateTime date = viewChangedDetails.visibleDates[6];
+                scCurrentPage =
+                    (date.difference(DateTime.now()).inDays / 7).ceil() - 1;
+                _getScheduleDataSource();
+              },
+            ))),
+        const Padding(padding: EdgeInsets.only(top: 50)),
       ];
     } else {
       tutorWidgets = [

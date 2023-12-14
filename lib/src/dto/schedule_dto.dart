@@ -3,13 +3,16 @@ import 'dart:ui';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class Schedule {
-  Schedule(this.eventName, this.from, this.to, this.background, this.isAllDay);
+  Schedule(this.id, this.eventName, this.from, this.to, this.background,
+      this.isAllDay, this.isBooked);
 
   String eventName;
+  String id;
   DateTime from;
   DateTime to;
   Color background;
   bool isAllDay;
+  bool isBooked;
 }
 
 class ScheduleDataSource extends CalendarDataSource {

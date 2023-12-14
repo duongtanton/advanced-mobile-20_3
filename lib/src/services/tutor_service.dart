@@ -126,9 +126,11 @@ class TutorService {
       return {'success': false, 'message': 'Access token not found'};
     }
     final response = await http.get(
-      Uri.parse('$baseUrl/schedule?tutorId=$tutorId&page=$page'),
-      headers: {'Content-Type': 'application/json'}
-    );
+        Uri.parse('$baseUrl/schedule?tutorId=$tutorId&page=$page'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${tokens['access_token']}'
+        });
 
     if (response.statusCode == 200) {
       return {
@@ -137,7 +139,31 @@ class TutorService {
         'data': jsonDecode(response.body)?['scheduleOfTutor']
       };
     } else {
-      return {'success': false, 'message': 'Cannot get tutor'};
+      return {'success': false, 'message': 'Cannot get schedule tutor'};
+    }
+  }
+
+  Future<Map<String, dynamic>> toggleFavorite(String tutorId) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response =
+        await http.post(Uri.parse('$baseUrl/user/manageFavoriteTutor'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ${tokens['access_token']}'
+            },
+            body: jsonEncode({'tutorId': tutorId}));
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Register successful',
+        'data': jsonDecode(response.body)?['result']
+      };
+    } else {
+      return {'success': false, 'message': 'Toggle favorite failed'};
     }
   }
 }
