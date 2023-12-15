@@ -1,10 +1,10 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_20120598/src/components/header.dart';
 import 'package:mobile_20120598/src/components/video.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/dto/schedule_dto.dart';
+import 'package:mobile_20120598/src/layouts/main_layout.dart';
 import 'package:mobile_20120598/src/services/booking_service.dart';
 import 'package:mobile_20120598/src/services/tutor_service.dart';
 import 'package:mobile_20120598/src/util/common_util.dart';
@@ -298,12 +298,8 @@ class _BookingPageState extends State<BookingPage> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(90),
-              child: const Image(
-                image: AssetImage("assets/images/teacher.jpg"),
-                height: 90,
-                width: 90,
-                fit: BoxFit.cover,
-              ),
+              child: Image.network(tutor["User"]["avatar"],
+                  height: 90, width: 90, fit: BoxFit.cover),
             ),
             const Padding(padding: EdgeInsets.only(left: 20)),
             Column(
@@ -319,7 +315,9 @@ class _BookingPageState extends State<BookingPage> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.only(top: 6)),
-                Row(children: CommonUtil.renderStars(tutor["rating"], 5, 18)),
+                Row(
+                    children:
+                        CommonUtil.renderStars(tutor["rating"] ?? 5, 5, 18)),
                 const Padding(padding: EdgeInsets.only(top: 6)),
                 Row(
                   children: [
@@ -571,7 +569,7 @@ class _BookingPageState extends State<BookingPage> {
                             const Padding(padding: EdgeInsets.only(top: 6)),
                             Row(
                                 children: CommonUtil.renderStars(
-                                    fb['rating'], 5, 12)),
+                                    fb['rating'] ?? 5, 5, 12)),
                             const Padding(padding: EdgeInsets.only(top: 20))
                           ],
                         ),
@@ -636,39 +634,21 @@ class _BookingPageState extends State<BookingPage> {
         )
       ];
     }
-    return Scaffold(
-      body: Column(
-        children: [
-          const Header(login: true),
-          Expanded(
-              child: SingleChildScrollView(
-                  child: Container(
-            padding:
-                const EdgeInsets.only(bottom: 30, top: 26, left: 26, right: 26),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: tutorWidgets),
-          )))
-        ],
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: "Gift",
-            onPressed: () => {},
-            tooltip: 'Gift',
-            child: const Icon(Icons.gif_box),
-          ),
-          const Padding(padding: EdgeInsets.only(top: 8)),
-          FloatingActionButton(
-            heroTag: "Message",
-            onPressed: () => {},
-            tooltip: 'Message',
-            child: const Icon(Icons.message),
-          )
-        ],
-      ),
-    );
+    return MainLayout(
+        screen: "booking_page",
+        showNavigators: true,
+        body: Column(
+          children: [
+            Expanded(
+                child: SingleChildScrollView(
+                    child: Container(
+              padding: const EdgeInsets.only(
+                  bottom: 30, top: 26, left: 26, right: 26),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: tutorWidgets),
+            )))
+          ],
+        ));
   }
 }

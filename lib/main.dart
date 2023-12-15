@@ -7,7 +7,7 @@ import 'package:mobile_20120598/src/pages/courses_page.dart';
 import 'package:mobile_20120598/src/pages/error_page.dart';
 import 'package:mobile_20120598/src/pages/evaluate_page.dart';
 import 'package:mobile_20120598/src/pages/home_page.dart';
-import 'package:mobile_20120598/src/pages/lesson_info.dart';
+import 'package:mobile_20120598/src/pages/lesson_info_page.dart';
 import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/signup_page.dart';
