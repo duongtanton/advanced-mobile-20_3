@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -89,7 +91,7 @@ class _MainLayoutState extends State<MainLayout> {
     if (response['success']) {
       setState(() {
         user = response['data'];
-        prefs.setString('user', user);
+        prefs.setString('user', jsonEncode(user));
         navigators[0]["name"] = user["name"];
       });
     }

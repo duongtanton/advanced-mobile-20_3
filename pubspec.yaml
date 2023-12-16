@@ -52,6 +52,7 @@ dependencies:
   country_flags: ^2.2.0
   async: ^2.11.0
   timeago: ^3.6.0
+  date_count_down: ^3.0.0
 
 dev_dependencies:
   flutter_test:

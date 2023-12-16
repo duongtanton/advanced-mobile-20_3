@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:country_flags/country_flags.dart';
+import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
+import 'package:mobile_20120598/src/services/booking_service.dart';
 import 'package:mobile_20120598/src/services/tutor_service.dart';
 import 'package:mobile_20120598/src/util/common_util.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -38,9 +40,12 @@ class _HomePageState extends State<HomePage> {
   Timer? _debounce;
 
   TutorService tutorService = TutorService();
+  BookingService bookingService = BookingService();
+
   int currentPage = 1;
   int totalPage = 1;
   var tutors = [];
+  var nextBooking = null;
 
   @override
   void initState() {
@@ -59,6 +64,13 @@ class _HomePageState extends State<HomePage> {
 
   _asyncMethod() async {
     await _search();
+    await bookingService.getNext().then((value) {
+      if (value["success"]) {
+        setState(() {
+          nextBooking = value["data"];
+        });
+      }
+    });
   }
 
   _handleChangePage(index) async {
@@ -272,18 +284,66 @@ class _HomePageState extends State<HomePage> {
               color: Colors.blue,
               padding: const EdgeInsets.only(
                   top: 46, bottom: 30, left: 30, right: 30),
-              child: const Column(
-                children: [
-                  Text("Bạn không có buổi học nào.",
-                      textAlign: TextAlign.center,
-                      style:
-                      TextStyle(fontSize: 30, color: Colors.white)),
-                  Padding(padding: EdgeInsets.only(top: 26)),
-                  Text(
-                    "Chào mừng bạn đến với Letutor.",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                ],
+              child: Column(
+                children: nextBooking == null
+                    ? [
+                        const Text("Bạn không có buổi học nào sắp diễn ra.",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(fontSize: 30, color: Colors.white)),
+                        const Padding(padding: EdgeInsets.only(top: 26)),
+                        const Text(
+                          "Chào mừng bạn đến với Letutor.",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                      ]
+                    : () {
+                        var scheduleDetailInfo =
+                            nextBooking?['scheduleDetailInfo'];
+                        var scheduleInfo = scheduleDetailInfo?['scheduleInfo'];
+                        var tutorInfo = scheduleInfo?['tutorInfo'];
+                        return [
+                          const Text("Buổi học sắp diễn ra",
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(fontSize: 30, color: Colors.white)),
+                          const Padding(padding: EdgeInsets.only(top: 12)),
+                          Text(
+                              '${scheduleInfo["startTime"]} - ${scheduleInfo["endTime"]} ${scheduleInfo["date"]}',
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.white)),
+                          const Padding(padding: EdgeInsets.only(top: 12)),
+                          CountDownText(
+                            due: DateTime.fromMicrosecondsSinceEpoch(scheduleInfo['startTimestamp'] * 1000),
+                            finishedText: "Buổi học đã bắt đầu",
+                            showLabel: true,
+                            longDateName: true,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          const Padding(padding: EdgeInsets.only(top: 26)),
+                          ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(
+                              IconData(0xe457, fontFamily: 'MaterialIcons'),
+                              color: Colors.blue,
+                            ),
+                            label: const Text(
+                              "Vào lớp học",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: const BorderSide(
+                                          color: Colors.blue))),
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                            ),
+                          )
+                        ];
+                      }(),
               ),
             ),
             Container(
@@ -292,8 +352,8 @@ class _HomePageState extends State<HomePage> {
               width: double.infinity,
               decoration: const BoxDecoration(
                   border: Border(
-                      bottom: BorderSide(
-                          color: Color.fromRGBO(100, 100, 100, 1)))),
+                      bottom:
+                          BorderSide(color: Color.fromRGBO(100, 100, 100, 1)))),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -318,8 +378,7 @@ class _HomePageState extends State<HomePage> {
                                     _search();
                                   })),
                         ),
-                        const Padding(
-                            padding: EdgeInsets.only(right: 10)),
+                        const Padding(padding: EdgeInsets.only(right: 10)),
                         DropdownButton<String>(
                           value: selectedLocation,
                           padding: const EdgeInsets.only(bottom: 0),
@@ -343,28 +402,27 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Expanded(
                             child: TextField(
-                              controller: dateInput,
-                              decoration: const InputDecoration(
-                                  icon: Icon(Icons.calendar_today),
-                                  labelText: "Enter Date"),
-                              readOnly: true,
-                              onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1950),
-                                    lastDate: DateTime(2100));
-                                if (pickedDate != null) {
-                                  String formattedDate =
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(pickedDate);
-                                  setState(() {
-                                    dateInput.text = formattedDate;
-                                  });
-                                  _search();
-                                } else {}
-                              },
-                            )),
+                          controller: dateInput,
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.calendar_today),
+                              labelText: "Enter Date"),
+                          readOnly: true,
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1950),
+                                lastDate: DateTime(2100));
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              setState(() {
+                                dateInput.text = formattedDate;
+                              });
+                              _search();
+                            } else {}
+                          },
+                        )),
                       ],
                     ),
                     Row(
@@ -374,22 +432,18 @@ class _HomePageState extends State<HomePage> {
                             readOnly: true,
                             controller: startTime,
                             onTap: () async {
-                              TimeRange result =
-                              await showTimeRangePicker(
+                              TimeRange result = await showTimeRangePicker(
                                 context: context,
                               );
-                              startTime.text =
-                                  result.startTime.format(context);
-                              endTime.text =
-                                  result.endTime.format(context);
+                              startTime.text = result.startTime.format(context);
+                              endTime.text = result.endTime.format(context);
                               _search();
                             },
                             decoration: const InputDecoration(
                                 icon: Icon(Icons.timer),
                                 //icon of text field
-                                labelText:
-                                "Start time" //label text of field
-                            ),
+                                labelText: "Start time" //label text of field
+                                ),
                           ),
                         ),
                         Expanded(
@@ -397,22 +451,18 @@ class _HomePageState extends State<HomePage> {
                             readOnly: true,
                             controller: endTime,
                             onTap: () async {
-                              TimeRange result =
-                              await showTimeRangePicker(
+                              TimeRange result = await showTimeRangePicker(
                                 context: context,
                               );
-                              startTime.text =
-                                  result.startTime.format(context);
-                              endTime.text =
-                                  result.endTime.format(context);
+                              startTime.text = result.startTime.format(context);
+                              endTime.text = result.endTime.format(context);
                               _search();
                             },
                             decoration: const InputDecoration(
                                 icon: Icon(Icons.timer),
                                 //icon of text field
-                                labelText:
-                                "End time" //label text of field
-                            ),
+                                labelText: "End time" //label text of field
+                                ),
                           ),
                         )
                       ],
@@ -439,25 +489,20 @@ class _HomePageState extends State<HomePage> {
                               top: 8, right: 12, left: 12, bottom: 8),
                           decoration: const BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(16)),
+                                  BorderRadius.all(Radius.circular(16)),
                               border: Border(
                                 top: BorderSide(
-                                    color:
-                                    Color.fromRGBO(0, 113, 240, 1)),
+                                    color: Color.fromRGBO(0, 113, 240, 1)),
                                 bottom: BorderSide(
-                                    color:
-                                    Color.fromRGBO(0, 113, 240, 1)),
+                                    color: Color.fromRGBO(0, 113, 240, 1)),
                                 left: BorderSide(
-                                    color:
-                                    Color.fromRGBO(0, 113, 240, 1)),
+                                    color: Color.fromRGBO(0, 113, 240, 1)),
                                 right: BorderSide(
-                                    color:
-                                    Color.fromRGBO(0, 113, 240, 1)),
+                                    color: Color.fromRGBO(0, 113, 240, 1)),
                               )),
                           child: const Text("Đặt lại bộ tìm kiếm",
                               style: TextStyle(
-                                  color:
-                                  Color.fromRGBO(0, 113, 240, 1)))),
+                                  color: Color.fromRGBO(0, 113, 240, 1)))),
                     )
                   ]),
             ),
@@ -476,14 +521,14 @@ class _HomePageState extends State<HomePage> {
                   const Padding(padding: EdgeInsets.only(top: 20)),
                   totalPage > 0
                       ? Column(
-                    children: [
-                      ...tutorWidgets,
-                      NumberPaginator(
-                        numberPages: totalPage,
-                        onPageChange: _handleChangePage,
-                      )
-                    ],
-                  )
+                          children: [
+                            ...tutorWidgets,
+                            NumberPaginator(
+                              numberPages: totalPage,
+                              onPageChange: _handleChangePage,
+                            )
+                          ],
+                        )
                       : const Text("Không có kết quả tìm kiếm"),
                   const Padding(padding: EdgeInsets.only(top: 30)),
                 ],

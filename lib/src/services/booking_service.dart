@@ -64,4 +64,29 @@ class BookingService {
       return {'success': false, 'message': 'Register failed'};
     }
   }
+
+  Future<Map<String, dynamic>> getNext() async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(
+      Uri.parse(
+          '$baseUrl/booking/next'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokens['access_token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Register successful',
+        'data': jsonDecode(response.body)['data'][0] ?? null
+      };
+    } else {
+      return {'success': false, 'message': 'Register failed'};
+    }
+  }
 }
