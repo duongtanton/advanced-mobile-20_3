@@ -299,7 +299,17 @@ class _BookingPageState extends State<BookingPage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(90),
               child: Image.network(tutor["User"]["avatar"],
-                  height: 90, width: 90, fit: BoxFit.cover),
+                  height: 90,
+                  width: 90,
+                  fit: BoxFit.cover, errorBuilder: (BuildContext context,
+                      Object exception, StackTrace? stackTrace) {
+                return Image.asset(
+                  "assets/images/teacher.jpg",
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                );
+              }),
             ),
             const Padding(padding: EdgeInsets.only(left: 20)),
             Column(
@@ -589,7 +599,7 @@ class _BookingPageState extends State<BookingPage> {
             : const Text("Không có đánh giá nào"),
         const Padding(padding: EdgeInsets.only(top: 40)),
         SizedBox(
-            height: 800,
+            height: 600,
             child: SafeArea(
                 child: SfCalendar(
               view: CalendarView.week,
@@ -637,18 +647,12 @@ class _BookingPageState extends State<BookingPage> {
     return MainLayout(
         screen: "booking_page",
         showNavigators: true,
-        body: Column(
-          children: [
-            Expanded(
-                child: SingleChildScrollView(
-                    child: Container(
-              padding: const EdgeInsets.only(
-                  bottom: 30, top: 26, left: 26, right: 26),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: tutorWidgets),
-            )))
-          ],
+        body: Container(
+          padding:
+              const EdgeInsets.only(bottom: 30, top: 26, left: 26, right: 26),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: tutorWidgets),
         ));
   }
 }

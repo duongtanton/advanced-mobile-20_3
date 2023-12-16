@@ -23,25 +23,15 @@ class _VideoCallPageState extends State<VideoCallPage> {
         screen: "vide_call_page",
         showNavigators: true,
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-                child: SingleChildScrollView(
-                    child: Container(
-              padding: const EdgeInsets.only(
-                  left: 30, right: 30, top: 40, bottom: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  NumberPaginator(
-                    numberPages: 10,
-                    onPageChange: (int index) {
-                      // handle page change...
-                      Navigator.pushNamed(context, "/");
-                    },
-                  )
-                ],
-              ),
-            )))
+            NumberPaginator(
+              numberPages: 10,
+              onPageChange: (int index) {
+                // handle page change...
+                Navigator.pushNamed(context, "/");
+              },
+            )
           ],
         ));
   }

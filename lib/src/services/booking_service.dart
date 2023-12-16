@@ -36,4 +36,32 @@ class BookingService {
       return {'success': false, 'message': 'Toggle favorite failed'};
     }
   }
+
+  Future<Map<String, dynamic>> getBookings({
+    page = 1,
+    perPage = 10,
+  }) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(
+      Uri.parse(
+          '$baseUrl/booking/list/student?page=$page&perPage=$perPage&inFuture=1&orderBy=meeting&sortBy=asc'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokens['access_token']}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Register successful',
+        'data': jsonDecode(response.body)['data']
+      };
+    } else {
+      return {'success': false, 'message': 'Register failed'};
+    }
+  }
 }

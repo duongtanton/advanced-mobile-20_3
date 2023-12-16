@@ -22,26 +22,16 @@ class _LessonInfoPageState extends State<LessonInfoPage> {
     return MainLayout(
         screen: "lesson_info_page",
         showNavigators: true,
-        body: Column(
+        body:Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-                child: SingleChildScrollView(
-                    child: Container(
-              padding: const EdgeInsets.only(
-                  left: 30, right: 30, top: 40, bottom: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  NumberPaginator(
-                    numberPages: 10,
-                    onPageChange: (int index) {
-                      // handle page change...
-                      Navigator.pushNamed(context, "/video-call");
-                    },
-                  )
-                ],
-              ),
-            )))
+            NumberPaginator(
+              numberPages: 10,
+              onPageChange: (int index) {
+                // handle page change...
+                Navigator.pushNamed(context, "/video-call");
+              },
+            )
           ],
         ));
   }

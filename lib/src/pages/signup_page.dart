@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mobile_20120598/src/components/header.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
 import 'package:mobile_20120598/src/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -175,172 +174,158 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
         screen: "signup_page",
         body: Column(
           children: [
-            Expanded(
-                child: SingleChildScrollView(
-              child: Column(
+            const Image(
+                image: AssetImage("assets/images/sign-in-banner.png"),
+                height: 250),
+            Container(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: const Column(
                 children: [
-                  const Image(
-                      image: AssetImage("assets/images/sign-in-banner.png"),
-                      height: 250),
-                  Container(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: const Column(
-                      children: [
-                        Padding(padding: EdgeInsets.only(top: 40)),
-                        Text("Đăng ký",
-                            style: TextStyle(
-                                fontSize: 34,
-                                color: Color.fromRGBO(0, 113, 240, 1))),
-                        Padding(padding: EdgeInsets.only(top: 20)),
-                        Text(
-                          "Phát triển kỹ năng tiếng Anh nhanh nhất bằng cách học 1 "
-                          "kèm 1 trực tuyến theo mục tiêu và lộ trình dành cho riêng bạn.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
-                    child: Column(
-                      children: [
-                        TextField(
-                            enabled: step == "signup",
-                            decoration: InputDecoration(
-                                hintText: currentMode == "mb"
-                                    ? "0987795761"
-                                    : "mail@example.com",
-                                label: Text(currentMode == "mb"
-                                    ? "SỐ ĐIỆN THOẠI"
-                                    : "ĐỊA CHỈ EMAIL")),
-                            controller: _emailController),
-                        const Padding(padding: EdgeInsets.only(top: 20)),
-                        TextField(
-                          enabled: step == "signup",
-                          obscureText: !_obscured,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration: InputDecoration(
-                              label: const Text("MẬT KHẨU"),
-                              suffixIcon: GestureDetector(
-                                  onTap: _toggleObscured,
-                                  child: Icon(
-                                    _obscured
-                                        ? Icons.visibility_rounded
-                                        : Icons.visibility_off_rounded,
-                                    size: 24,
-                                  ))),
-                          controller: _passwordController,
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 20)),
-                        TextField(
-                          enabled: step == "signup",
-                          obscureText: !_reobscured,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration: InputDecoration(
-                              label: const Text("NHẬP LẠI MẬT KHẨU"),
-                              suffixIcon: GestureDetector(
-                                  onTap: _retoggleObscured,
-                                  child: Icon(
-                                    _reobscured
-                                        ? Icons.visibility_rounded
-                                        : Icons.visibility_off_rounded,
-                                    size: 24,
-                                  ))),
-                          controller: _repasswordController,
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 50)),
-                        Visibility(
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          visible: step == "confirm",
-                          child: TextField(
-                              decoration: const InputDecoration(
-                                  hintText: "1234", label: Text("MÃ XÁC NHẬN")),
-                              controller: _otpController),
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 50)),
-                        TextButton(
-                            onPressed: _signup,
-                            style: ButtonStyle(
-                                padding:
-                                    const MaterialStatePropertyAll<EdgeInsets>(
-                                        EdgeInsets.only(left: 30, right: 30)),
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                    (states) =>
-                                        const Color.fromRGBO(0, 113, 240, 1))),
-                            child: const Text("ĐĂNG KÝ",
-                                style: TextStyle(color: Colors.white))),
-                        const Padding(padding: EdgeInsets.only(top: 30)),
-                        const Text("Hoặc đăng ký với"),
-                        Container(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: _handleSignInFB,
-                                  child: SvgPicture.asset(
-                                      "assets/images/fb.svg",
-                                      height: 40),
-                                ),
-                                const Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 6, right: 6)),
-                                GestureDetector(
-                                  onTap: _handleSignUpGG,
-                                  child: SvgPicture.asset(
-                                      "assets/images/gg.svg",
-                                      height: 40),
-                                ),
-                                const Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 6, right: 6)),
-                                GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (currentMode == "mb") {
-                                          currentMode = "mail";
-                                        } else {
-                                          currentMode = "mb";
-                                        }
-                                      });
-                                    },
-                                    child: SvgPicture.asset(
-                                        "assets/images/mb.svg",
-                                        height: 40))
-                              ],
-                            )),
-                        const Padding(padding: EdgeInsets.only(top: 20)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Bạn đã có tài khoản? "),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, "/sign-in");
-                              },
-                              child: const Text(
-                                "Đăng nhập",
-                                style: TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 80)),
-                      ],
+                  Padding(padding: EdgeInsets.only(top: 40)),
+                  Text("Đăng ký",
+                      style: TextStyle(
+                          fontSize: 34, color: Color.fromRGBO(0, 113, 240, 1))),
+                  Padding(padding: EdgeInsets.only(top: 20)),
+                  Text(
+                    "Phát triển kỹ năng tiếng Anh nhanh nhất bằng cách học 1 "
+                    "kèm 1 trực tuyến theo mục tiêu và lộ trình dành cho riêng bạn.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
                     ),
                   )
                 ],
               ),
-            ))
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
+              child: Column(
+                children: [
+                  TextField(
+                      enabled: step == "signup",
+                      decoration: InputDecoration(
+                          hintText: currentMode == "mb"
+                              ? "0987795761"
+                              : "mail@example.com",
+                          label: Text(currentMode == "mb"
+                              ? "SỐ ĐIỆN THOẠI"
+                              : "ĐỊA CHỈ EMAIL")),
+                      controller: _emailController),
+                  const Padding(padding: EdgeInsets.only(top: 20)),
+                  TextField(
+                    enabled: step == "signup",
+                    obscureText: !_obscured,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                        label: const Text("MẬT KHẨU"),
+                        suffixIcon: GestureDetector(
+                            onTap: _toggleObscured,
+                            child: Icon(
+                              _obscured
+                                  ? Icons.visibility_rounded
+                                  : Icons.visibility_off_rounded,
+                              size: 24,
+                            ))),
+                    controller: _passwordController,
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 20)),
+                  TextField(
+                    enabled: step == "signup",
+                    obscureText: !_reobscured,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                        label: const Text("NHẬP LẠI MẬT KHẨU"),
+                        suffixIcon: GestureDetector(
+                            onTap: _retoggleObscured,
+                            child: Icon(
+                              _reobscured
+                                  ? Icons.visibility_rounded
+                                  : Icons.visibility_off_rounded,
+                              size: 24,
+                            ))),
+                    controller: _repasswordController,
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 50)),
+                  Visibility(
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    visible: step == "confirm",
+                    child: TextField(
+                        decoration: const InputDecoration(
+                            hintText: "1234", label: Text("MÃ XÁC NHẬN")),
+                        controller: _otpController),
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 50)),
+                  TextButton(
+                      onPressed: _signup,
+                      style: ButtonStyle(
+                          padding: const MaterialStatePropertyAll<EdgeInsets>(
+                              EdgeInsets.only(left: 30, right: 30)),
+                          backgroundColor: MaterialStateColor.resolveWith(
+                              (states) =>
+                                  const Color.fromRGBO(0, 113, 240, 1))),
+                      child: const Text("ĐĂNG KÝ",
+                          style: TextStyle(color: Colors.white))),
+                  const Padding(padding: EdgeInsets.only(top: 30)),
+                  const Text("Hoặc đăng ký với"),
+                  Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: _handleSignInFB,
+                            child: SvgPicture.asset("assets/images/fb.svg",
+                                height: 40),
+                          ),
+                          const Padding(
+                              padding: EdgeInsets.only(left: 6, right: 6)),
+                          GestureDetector(
+                            onTap: _handleSignUpGG,
+                            child: SvgPicture.asset("assets/images/gg.svg",
+                                height: 40),
+                          ),
+                          const Padding(
+                              padding: EdgeInsets.only(left: 6, right: 6)),
+                          GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (currentMode == "mb") {
+                                    currentMode = "mail";
+                                  } else {
+                                    currentMode = "mb";
+                                  }
+                                });
+                              },
+                              child: SvgPicture.asset("assets/images/mb.svg",
+                                  height: 40))
+                        ],
+                      )),
+                  const Padding(padding: EdgeInsets.only(top: 20)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Bạn đã có tài khoản? "),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/sign-in");
+                        },
+                        child: const Text(
+                          "Đăng nhập",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 80)),
+                ],
+              ),
+            )
           ],
         ));
   }

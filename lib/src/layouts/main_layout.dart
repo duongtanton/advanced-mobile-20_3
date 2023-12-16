@@ -1,6 +1,8 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile_20120598/src/services/user_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout(
@@ -20,7 +22,7 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   List<dynamic> navigators = [
     {
-      "name": "Phhai",
+      "name": "Tài khoản của tôi",
       "icon": Icons.ice_skating,
       "route": "/user",
     },
@@ -37,7 +39,7 @@ class _MainLayoutState extends State<MainLayout> {
     {
       "name": "Lịch học",
       "icon": Icons.person_off,
-      "route": "/profile",
+      "route": "/schedule",
     },
     {
       "name": "Lịch sử",
@@ -64,6 +66,34 @@ class _MainLayoutState extends State<MainLayout> {
     {"name": "English", "code": "en", "country": "US"},
     {"name": "Việt nam", "code": "vi", "country": "VN"},
   ];
+  final UserService _userService = UserService();
+  late SharedPreferences prefs;
+
+  var user = null;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    prefs = await SharedPreferences.getInstance();
+    await _getUserInfo();
+  }
+
+  _getUserInfo() async {
+    final response = await _userService.getCurrentInfo();
+    if (response['success']) {
+      setState(() {
+        user = response['data'];
+        prefs.setString('user', user);
+        navigators[0]["name"] = user["name"];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +155,7 @@ class _MainLayoutState extends State<MainLayout> {
             const Padding(padding: EdgeInsets.only(right: 10)),
           ],
         ),
-        body: widget.body,
+        body: SingleChildScrollView(child: widget.body),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

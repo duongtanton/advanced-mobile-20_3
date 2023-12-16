@@ -11,6 +11,7 @@ import 'package:mobile_20120598/src/pages/lesson_info_page.dart';
 import 'package:mobile_20120598/src/pages/schedule_page.dart';
 import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/signup_page.dart';
+import 'package:mobile_20120598/src/pages/user_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -75,6 +76,10 @@ class MyApp extends StatelessWidget {
           case '/video-call':
             return MaterialPageRoute(
                 builder: (context) => const VideoCallPage(title: "video-call"),
+                settings: settings);
+          case '/user':
+            return MaterialPageRoute(
+                builder: (context) => const UserPage(title: "user"),
                 settings: settings);
           default:
             // Handle unknown routes here
