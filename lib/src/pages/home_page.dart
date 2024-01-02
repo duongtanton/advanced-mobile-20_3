@@ -8,6 +8,7 @@ import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
 import 'package:mobile_20120598/src/services/booking_service.dart';
 import 'package:mobile_20120598/src/services/tutor_service.dart';
+import 'package:mobile_20120598/src/services/user_service.dart';
 import 'package:mobile_20120598/src/util/common_util.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:time_range_picker/time_range_picker.dart';
@@ -41,11 +42,13 @@ class _HomePageState extends State<HomePage> {
 
   TutorService tutorService = TutorService();
   BookingService bookingService = BookingService();
+  UserService userService = UserService();
 
   int currentPage = 1;
   int totalPage = 1;
   var tutors = [];
   var nextBooking = null;
+  var totalMinutes = "";
 
   @override
   void initState() {
@@ -68,6 +71,16 @@ class _HomePageState extends State<HomePage> {
       if (value["success"]) {
         setState(() {
           nextBooking = value["data"];
+        });
+      }
+    });
+    await userService.getTotalMinutes().then((value) {
+      if (value["success"]) {
+        setState(() {
+          var total = value["data"]["total"];
+          var hours = total ~/ 60;
+          var minutes = total % 60;
+          totalMinutes = "$hours giờ $minutes phút";
         });
       }
     });
@@ -269,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Text(entry.value,
                       style: TextStyle(
-                          color: entry!.key == selectedSpecialty
+                          color: entry.key == selectedSpecialty
                               ? Colors.blue
                               : const Color.fromRGBO(100, 100, 100, 1))))),
         )
@@ -301,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                         var scheduleDetailInfo =
                             nextBooking?['scheduleDetailInfo'];
                         var scheduleInfo = scheduleDetailInfo?['scheduleInfo'];
-                        var tutorInfo = scheduleInfo?['tutorInfo'];
+                        // var tutorInfo = scheduleInfo?['tutorInfo'];
                         return [
                           const Text("Buổi học sắp diễn ra",
                               textAlign: TextAlign.center,
@@ -314,7 +327,8 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: 18, color: Colors.white)),
                           const Padding(padding: EdgeInsets.only(top: 12)),
                           CountDownText(
-                            due: DateTime.fromMicrosecondsSinceEpoch(scheduleInfo['startTimestamp'] * 1000),
+                            due: DateTime.fromMicrosecondsSinceEpoch(
+                                scheduleInfo['startTimestamp'] * 1000),
                             finishedText: "Buổi học đã bắt đầu",
                             showLabel: true,
                             longDateName: true,
@@ -341,6 +355,10 @@ class _HomePageState extends State<HomePage> {
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.white),
                             ),
+                          ),
+                          Text(
+                            "Tổng số giờ học là: $totalMinutes",
+                            style: const TextStyle(color: Colors.white),
                           )
                         ];
                       }(),

@@ -22,6 +22,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
+  String currentLanguage = "vi";
   List<dynamic> navigators = [
     {
       "name": "Tài khoản của tôi",
@@ -46,7 +47,7 @@ class _MainLayoutState extends State<MainLayout> {
     {
       "name": "Lịch sử",
       "icon": Icons.history,
-      "route": "/history",
+      "route": "/evaluate",
     },
     {
       "name": "Khóa học",
@@ -56,12 +57,12 @@ class _MainLayoutState extends State<MainLayout> {
     {
       "name": "Đăng kí làm gia sư",
       "icon": Icons.app_registration_rounded,
-      "route": "/register-teacher",
+      "route": "/become-tutor",
     },
     {
       "name": "Đăng xuất",
       "icon": Icons.logout,
-      "route": "/login",
+      "route": "/sign-in",
     },
   ];
   List<dynamic> languages = [
@@ -119,8 +120,12 @@ class _MainLayoutState extends State<MainLayout> {
             PopupMenuButton(
                 itemBuilder: (BuildContext bc) => languages
                     .map((e) => PopupMenuItem(
-                        value: e["name"],
-                        onTap: () => {},
+                        value: currentLanguage,
+                        onTap: () => {
+                              setState(() {
+                                currentLanguage = e["code"];
+                              })
+                            },
                         child: Row(
                           children: [
                             CountryFlag.fromCountryCode(e["country"],
@@ -131,7 +136,9 @@ class _MainLayoutState extends State<MainLayout> {
                         )))
                     .toList(),
                 onSelected: (value) {},
-                icon: CountryFlag.fromCountryCode('VN', width: 30, height: 40),
+                icon: currentLanguage == "vi"
+                    ? CountryFlag.fromCountryCode("VN", width: 30, height: 40)
+                    : CountryFlag.fromCountryCode("US", width: 30, height: 40),
                 position: PopupMenuPosition.under),
             const Padding(padding: EdgeInsets.only(right: 10)),
             widget.showNavigators
@@ -157,7 +164,12 @@ class _MainLayoutState extends State<MainLayout> {
             const Padding(padding: EdgeInsets.only(right: 10)),
           ],
         ),
-        body: SingleChildScrollView(child: widget.body),
+        body: Localizations.override(
+            context: context,
+            locale: Locale(currentLanguage),
+            child: Builder(builder: (BuildContext context) {
+              return  SingleChildScrollView(child: widget.body);
+            })),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

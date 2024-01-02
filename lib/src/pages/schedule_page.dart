@@ -105,9 +105,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   const SizedBox(height: 10),
                   const Text(
                     "* Lý do hủy buổi học",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.red),
+                    style: TextStyle(fontSize: 16, color: Colors.red),
                   ),
                   DropdownButton<String>(
                     padding: const EdgeInsets.only(bottom: 0),
@@ -117,7 +115,6 @@ class _SchedulePageState extends State<SchedulePage> {
                       color: Colors.black26,
                     ),
                     onChanged: (String? value) {
-                      setState(() {});
                     },
                     items: reasons.entries
                         .map((entry) => DropdownMenuItem<String>(
@@ -139,7 +136,17 @@ class _SchedulePageState extends State<SchedulePage> {
                   ElevatedButton(
                     onPressed: () {
                       // Add form submission logic here
-                      Navigator.of(context).pop(); // Close the popup
+                      (() async {
+                        var response = await bookingService.cancel([scheduleInfo['id']]);
+                        if (response['success']) {
+                          Navigator.of(context).pop();
+                          _asyncMethod();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Hủy buổi học thất bại')));
+                          Navigator.of(context).pop();
+                        }
+                      })(); // Close the popup
                     },
                     child: const Text('Xác nhận hủy'),
                   ),
@@ -162,6 +169,7 @@ class _SchedulePageState extends State<SchedulePage> {
         return Container(
           padding:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+          margin: const EdgeInsets.only(bottom: 20),
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),

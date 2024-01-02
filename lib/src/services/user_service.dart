@@ -32,4 +32,26 @@ class UserService {
       return {'success': false, 'message': 'Get current user failed'};
     }
   }
+
+  Future<Map<String, dynamic>> getTotalMinutes() async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(Uri.parse('$baseUrl/call/total'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${tokens['access_token']}'
+        });
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Update profile successful',
+        'data': jsonDecode(response.body)
+      };
+    } else {
+      return {'success': false, 'message': 'Update profile failed'};
+    }
+  }
 }

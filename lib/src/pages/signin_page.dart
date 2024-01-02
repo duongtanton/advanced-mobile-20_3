@@ -64,7 +64,7 @@ class _SignInPageState extends State<SignInPage> {
       final token = result.accessToken?.token;
       final data = await authService.loginByFbAuth(token!);
       if (data['success'] == false) {
-        message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
+        message = "Đăng nhập thất bại vui lòng thử lại.";
       } else {
         prefs.setString('access_token', data['tokens']["access"]["token"]);
         prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
@@ -88,7 +88,7 @@ class _SignInPageState extends State<SignInPage> {
       final token = googleAuth?.accessToken;
       final data = await authService.loginByMailAuth(token!);
       if (data['success'] == false) {
-        message = "Vui lòng kiểm tra lại mã xác nhận của bạn";
+        message = "Đăng nhập thất bại vui lòng thử lại.";
       } else {
         prefs.setString('access_token', data['tokens']["access"]["token"]);
         prefs.setString('refresh_token', data['tokens']["refresh"]["token"]);
@@ -176,7 +176,7 @@ class _SignInPageState extends State<SignInPage> {
                 height: 250),
             Container(
               padding: const EdgeInsets.only(left: 10, right: 10),
-              child: const Column(
+              child:  Column(
                 children: [
                   Padding(padding: EdgeInsets.only(top: 40)),
                   Text("Đăng nhập",

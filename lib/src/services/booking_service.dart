@@ -37,17 +37,16 @@ class BookingService {
     }
   }
 
-  Future<Map<String, dynamic>> getBookings({
-    page = 1,
-    perPage = 10,
-  }) async {
+  Future<Map<String, dynamic>> getBookings(
+      {page = 1, perPage = 10, inFuture = 1, sortBy="asc"}) async {
     final tokens = await UtilService.getTokens();
     if (tokens['access_token'] == null) {
       return {'success': false, 'message': 'Access token not found'};
     }
+
     final response = await http.get(
-      Uri.parse(
-          '$baseUrl/booking/list/student?page=$page&perPage=$perPage&inFuture=1&orderBy=meeting&sortBy=asc'),
+      Uri.parse('$baseUrl/booking/list/student?page=$page&perPage=$perPage&'
+          'inFuture=$inFuture&orderBy=meeting&sortBy=$sortBy'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${tokens['access_token']}',
@@ -71,8 +70,7 @@ class BookingService {
       return {'success': false, 'message': 'Access token not found'};
     }
     final response = await http.get(
-      Uri.parse(
-          '$baseUrl/booking/next'),
+      Uri.parse('$baseUrl/booking/next'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${tokens['access_token']}',
@@ -87,6 +85,31 @@ class BookingService {
       };
     } else {
       return {'success': false, 'message': 'Register failed'};
+    }
+  }
+
+  Future<Map<String, dynamic>> cancel(List<String> ids) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.delete(
+      Uri.parse('$baseUrl/booking'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${tokens['access_token']}',
+      },
+      body: jsonEncode({'scheduleDetailIds': ids}),
+    );
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Cancel booking successful',
+        'data': jsonDecode(response.body)['data'][0] ?? null
+      };
+    } else {
+      return {'success': false, 'message': 'Cancel booking failed'};
     }
   }
 }

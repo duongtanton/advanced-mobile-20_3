@@ -262,7 +262,11 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      bookingService.book([schedule.id], bookingNote.text);
+                      (() async {
+                        await bookingService.book([schedule.id], bookingNote.text);
+                        await _getScheduleDataSource();
+                        Navigator.of(context).pop();
+                      })();
                     },
                     child: const Text('Đặt'),
                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
+import 'package:mobile_20120598/src/pages/become_tutor.dart';
 import 'package:mobile_20120598/src/pages/booking_page.dart';
 import 'package:mobile_20120598/src/pages/course_info_page.dart';
 import 'package:mobile_20120598/src/pages/courses_page.dart';
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '20120598',
       initialRoute: "/sign-in",
+
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
@@ -81,6 +84,10 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
                 builder: (context) => const UserPage(title: "user"),
                 settings: settings);
+          case '/become-tutor':
+            return MaterialPageRoute(
+                builder: (context) => const BecomeTutorPage(title: "become-tutor"),
+                settings: settings);
           default:
             // Handle unknown routes here
             return MaterialPageRoute(
@@ -88,6 +95,15 @@ class MyApp extends StatelessWidget {
                 settings: settings);
         }
       },
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('vi', 'VN'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ]
     );
   }
 }
