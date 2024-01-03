@@ -89,4 +89,24 @@ class CourseService {
       return {'success': false, 'message': 'Get interactive ebooks failed'};
     }
   }
+
+  Future<Map<String, dynamic>> getById(String id) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.get(Uri.parse('$baseUrl/course/$id'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${tokens['access_token']}'
+    });
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Get course successful',
+        'data': jsonDecode(response.body)?['data']
+      };
+    } else {
+      return {'success': false, 'message': 'Get course failed'};
+    }
+  }
 }

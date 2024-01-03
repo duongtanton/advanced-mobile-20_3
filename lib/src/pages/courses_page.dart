@@ -259,7 +259,9 @@ class _CoursesPageState extends State<CoursesPage> {
                                           onTap: () {
                                             Navigator.pushNamed(
                                                 context, "/course-info",
-                                                arguments: object);
+                                                arguments: {
+                                                  "courseId": object["id"]
+                                                });
                                           },
                                           child: Container(
                                             margin: const EdgeInsets.only(
@@ -283,7 +285,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Container(
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       bottom: 20),
                                                   width: MediaQuery.of(context)
                                                       .size
@@ -310,27 +312,28 @@ class _CoursesPageState extends State<CoursesPage> {
                                                     children: [
                                                       Text(
                                                         object["name"],
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w600),
                                                       ),
-                                                      Padding(
+                                                      const Padding(
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 8)),
                                                       Text(
                                                           object["description"],
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 14,
                                                           )),
-                                                      Padding(
+                                                      const Padding(
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 30)),
                                                       Text("Intermediate • "
-                                                          "${object["topics"]!.length ?? 0}"
+                                                          "${object!["topics"]!.length ?? 0}"
                                                           " Lessons")
                                                     ],
                                                   ),
@@ -345,8 +348,8 @@ class _CoursesPageState extends State<CoursesPage> {
                             )),
                             SingleChildScrollView(
                                 child: Container(
-                              padding:
-                                  EdgeInsets.only(top: 20, right: 20, left: 20),
+                              padding: const EdgeInsets.only(
+                                  top: 20, right: 20, left: 20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: objects.isNotEmpty
@@ -355,7 +358,9 @@ class _CoursesPageState extends State<CoursesPage> {
                                           onTap: () {
                                             Navigator.pushNamed(
                                                 context, "/course-info",
-                                                arguments: object);
+                                                arguments: {
+                                                  "tutorId": object["id"]
+                                                });
                                           },
                                           child: Container(
                                             margin: const EdgeInsets.only(
@@ -379,7 +384,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Container(
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       bottom: 20),
                                                   width: MediaQuery.of(context)
                                                       .size
@@ -394,10 +399,11 @@ class _CoursesPageState extends State<CoursesPage> {
                                                   ),
                                                 ),
                                                 Container(
-                                                  padding: EdgeInsets.only(
-                                                      right: 20,
-                                                      bottom: 20,
-                                                      left: 20),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 20,
+                                                          bottom: 20,
+                                                          left: 20),
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
@@ -405,27 +411,28 @@ class _CoursesPageState extends State<CoursesPage> {
                                                     children: [
                                                       Text(
                                                         object["name"],
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w600),
                                                       ),
-                                                      Padding(
+                                                      const Padding(
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 8)),
                                                       Text(
                                                           object["description"],
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 14,
                                                           )),
-                                                      Padding(
+                                                      const Padding(
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 30)),
                                                       Text("Intermediate • "
-                                                          "${object["topics"]!.length ?? 0}"
+                                                          "${object!["topics"]!.length ?? 0}"
                                                           " Lessons")
                                                     ],
                                                   ),
@@ -435,13 +442,13 @@ class _CoursesPageState extends State<CoursesPage> {
                                           ),
                                         );
                                       }).toList()
-                                    : [Text("No data")],
+                                    : [const Text("No data")],
                               ),
                             )),
                             SingleChildScrollView(
                                 child: Container(
-                              padding:
-                                  EdgeInsets.only(top: 20, right: 20, left: 20),
+                              padding: const EdgeInsets.only(
+                                  top: 20, right: 20, left: 20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: objects.isNotEmpty
@@ -450,14 +457,17 @@ class _CoursesPageState extends State<CoursesPage> {
                                           onTap: () {
                                             Navigator.pushNamed(
                                                 context, "/course-info",
-                                                arguments: object);
+                                                arguments: {
+                                                  "tutorId": object["id"]
+                                                });
                                           },
                                           child: Container(
-                                            margin: EdgeInsets.only(
+                                            margin: const EdgeInsets.only(
                                                 top: 15, bottom: 15),
                                             decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(20)),
                                                 boxShadow: [
                                                   BoxShadow(
                                                     color: Colors.grey
@@ -473,7 +483,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Container(
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       bottom: 20),
                                                   width: MediaQuery.of(context)
                                                       .size
@@ -488,10 +498,11 @@ class _CoursesPageState extends State<CoursesPage> {
                                                   ),
                                                 ),
                                                 Container(
-                                                  padding: EdgeInsets.only(
-                                                      right: 20,
-                                                      bottom: 20,
-                                                      left: 20),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 20,
+                                                          bottom: 20,
+                                                          left: 20),
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
@@ -499,27 +510,28 @@ class _CoursesPageState extends State<CoursesPage> {
                                                     children: [
                                                       Text(
                                                         object["name"],
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w600),
                                                       ),
-                                                      Padding(
+                                                      const Padding(
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 8)),
                                                       Text(
                                                           object["description"],
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 14,
                                                           )),
-                                                      Padding(
+                                                      const Padding(
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 30)),
                                                       Text("Intermediate • "
-                                                          "${object["topics"]!.length ?? 0}"
+                                                          "${object!["topics"]!.length ?? 0}"
                                                           " Lessons")
                                                     ],
                                                   ),
@@ -529,7 +541,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                           ),
                                         );
                                       }).toList()
-                                    : [Text("No data")],
+                                    : [const Text("No data")],
                               ),
                             )),
                           ],

@@ -143,12 +143,12 @@ class _MainLayoutState extends State<MainLayout> {
             Container(
               width: 68,
               color: Colors.grey[200],
+              margin: const EdgeInsets.only(top: 10),
               padding: const EdgeInsets.all(4),
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 50),
                   Avatar(url: "", size: 60),
                   // Add your user list widget here
                   // Example:
