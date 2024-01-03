@@ -55,6 +55,7 @@ dependencies:
   date_count_down: ^3.0.0
   flutter_localizations:
     sdk: flutter
+  flutter_chat_ui: ^1.6.10
 
 dev_dependencies:
   flutter_test:

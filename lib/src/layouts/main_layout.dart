@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile_20120598/src/components/avatar.dart';
 import 'package:mobile_20120598/src/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +23,13 @@ class MainLayout extends StatefulWidget {
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
+}
+
+// For the testing purposes, you should probably use https://pub.dev/packages/uuid.
+String randomString() {
+  final random = Random.secure();
+  final values = List<int>.generate(16, (i) => random.nextInt(255));
+  return base64UrlEncode(values);
 }
 
 class _MainLayoutState extends State<MainLayout> {
@@ -73,6 +84,9 @@ class _MainLayoutState extends State<MainLayout> {
   late SharedPreferences prefs;
 
   var user = null;
+  List<types.Message> _messages = [];
+  types.User _user =
+      const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
 
   @override
   void initState() {
@@ -96,6 +110,72 @@ class _MainLayoutState extends State<MainLayout> {
         navigators[0]["name"] = user["name"];
       });
     }
+  }
+
+  void _showChatDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Row(children: [
+            Expanded(
+                child: Column(children: [
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: const Text(
+                  "Keegan",
+                  style: TextStyle(fontSize: 30, color: Colors.black),
+                ),
+              ),
+              Expanded(
+                child: Chat(
+                  messages: _messages,
+                  onSendPressed: _handleSendPressed,
+                  user: _user,
+                ),
+              ),
+            ])),
+            Container(
+              width: 68,
+              color: Colors.grey[200],
+              padding: const EdgeInsets.all(4),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 50),
+                  Avatar(url: "", size: 60),
+                  // Add your user list widget here
+                  // Example:
+                ],
+              ),
+            ),
+          ]),
+        );
+      },
+    );
+  }
+
+  void _addMessage(types.Message message) {
+    setState(() {
+      _messages.insert(0, message);
+    });
+  }
+
+  void _handleSendPressed(types.PartialText message) {
+    final textMessage = types.TextMessage(
+      author: _user,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: randomString(),
+      text: message.text,
+    );
+
+    _addMessage(textMessage);
   }
 
   @override
@@ -168,7 +248,7 @@ class _MainLayoutState extends State<MainLayout> {
             context: context,
             locale: Locale(currentLanguage),
             child: Builder(builder: (BuildContext context) {
-              return  SingleChildScrollView(child: widget.body);
+              return SingleChildScrollView(child: widget.body);
             })),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -182,10 +262,12 @@ class _MainLayoutState extends State<MainLayout> {
             const Padding(padding: EdgeInsets.only(top: 8)),
             FloatingActionButton(
               heroTag: "Message",
-              onPressed: () => {},
+              onPressed: () {
+                _showChatDialog(context);
+              },
               tooltip: 'Message',
               child: const Icon(Icons.message),
-            )
+            ),
           ],
         ));
   }
