@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +18,29 @@ class CoursesPage extends StatefulWidget {
 
 class _CoursesPageState extends State<CoursesPage> {
   CourseService courseService = CourseService();
-
+  List<String> levels = [
+    'All',
+    'Beginner',
+    'Upper Beginner',
+    'Pre-Intermediate',
+    'Intermediate',
+    'Upper Intermediate',
+    'Pre-Advanced',
+    'Advanced',
+  ];
+  List<String> difficulties = [
+    'Độ khó giảm dần',
+    'Độ khó tăng dần',
+  ];
   List<dynamic> objects = [];
+  List<dynamic> contentCategories = [];
   var totalPage = 1;
   var currentPage = 1;
+  Timer? _debounce;
+  TextEditingController searchText = TextEditingController();
+  String level = "";
+  String category = "";
+  String difficulty = "";
 
   @override
   void initState() {
@@ -31,15 +52,41 @@ class _CoursesPageState extends State<CoursesPage> {
 
   _asyncMethod() async {
     await _getCourse();
+    await _getContentCategory();
   }
 
   _getCourse() async {
-    final response =
-        await courseService.getCourse(currentPage: currentPage, perPage: 10);
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 800), () async {
+      var levelId = levels.contains(level) ? levels.indexOf(level) : null;
+      var indexOfDifficulty = difficulties.indexOf(difficulty);
+      var difficultyId = indexOfDifficulty == 0
+          ? "asc"
+          : (indexOfDifficulty == 1 ? "desc" : null);
+      var categoryId = contentCategories
+          .firstWhere((element) => element["title"] == category)?["id"];
+
+      final response = await courseService.getCourse(
+          currentPage: currentPage,
+          perPage: 10,
+          level: levelId,
+          categoryId: categoryId,
+          orderBy: difficultyId,
+          searchText: searchText.text);
+      if (response['success']) {
+        setState(() {
+          objects = response['data']["rows"];
+          totalPage = response['data']['count'];
+        });
+      }
+    });
+  }
+
+  _getContentCategory() async {
+    final response = await courseService.getContentCategory();
     if (response['success']) {
       setState(() {
-        objects = response['data']["rows"];
-        totalPage = response['data']['count'];
+        contentCategories = response['data'];
       });
     }
   }
@@ -64,6 +111,12 @@ class _CoursesPageState extends State<CoursesPage> {
         totalPage = response['data']['count'];
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -133,46 +186,24 @@ class _CoursesPageState extends State<CoursesPage> {
               Row(
                 children: [
                   Expanded(
-                      child: EasyAutocomplete(
+                      child: TextField(
                           decoration:
                               const InputDecoration(hintText: "Khóa học"),
-                          suggestions: const [
-                            'Afeganistan',
-                            'Albania',
-                            'Algeria',
-                            'Australia',
-                            'Brazil',
-                            'German',
-                            'Madagascar',
-                            'Mozambique',
-                            'Portugal',
-                            'Zambia'
-                          ],
-                          onChanged: (value) =>
-                              print('onChanged value: $value'),
-                          onSubmitted: (value) =>
-                              print('onSubmitted value: $value'))),
+                          controller: searchText,
+                          onChanged: (text) {
+                            _getCourse();
+                          })),
                   const Padding(padding: EdgeInsets.only(left: 20)),
                   Expanded(
                       child: EasyAutocomplete(
                           decoration:
                               const InputDecoration(hintText: "Chọn cấp độ"),
-                          suggestions: const [
-                            'Afeganistan',
-                            'Albania',
-                            'Algeria',
-                            'Australia',
-                            'Brazil',
-                            'German',
-                            'Madagascar',
-                            'Mozambique',
-                            'Portugal',
-                            'Zambia'
-                          ],
-                          onChanged: (value) =>
-                              print('onChanged value: $value'),
-                          onSubmitted: (value) =>
-                              print('onSubmitted value: $value')))
+                          suggestions: levels,
+                          onChanged: (value) {},
+                          onSubmitted: (value) {
+                            level = value;
+                            _getCourse();
+                          }))
                 ],
               ),
               Row(
@@ -181,43 +212,25 @@ class _CoursesPageState extends State<CoursesPage> {
                       child: EasyAutocomplete(
                           decoration:
                               const InputDecoration(hintText: "Chọn danh mục"),
-                          suggestions: const [
-                            'Afeganistan',
-                            'Albania',
-                            'Algeria',
-                            'Australia',
-                            'Brazil',
-                            'German',
-                            'Madagascar',
-                            'Mozambique',
-                            'Portugal',
-                            'Zambia'
-                          ],
-                          onChanged: (value) =>
-                              print('onChanged value: $value'),
-                          onSubmitted: (value) =>
-                              print('onSubmitted value: $value'))),
+                          suggestions: contentCategories
+                              .map<String>((e) => e["title"])
+                              .toList(),
+                          onChanged: (value) {},
+                          onSubmitted: (value) {
+                            category = value;
+                            _getCourse();
+                          })),
                   const Padding(padding: EdgeInsets.only(left: 20)),
                   Expanded(
                       child: EasyAutocomplete(
                           decoration:
                               const InputDecoration(hintText: "Xắp xếp theo"),
-                          suggestions: const [
-                            'Afeganistan',
-                            'Albania',
-                            'Algeria',
-                            'Australia',
-                            'Brazil',
-                            'German',
-                            'Madagascar',
-                            'Mozambique',
-                            'Portugal',
-                            'Zambia'
-                          ],
-                          onChanged: (value) =>
-                              print('onChanged value: $value'),
-                          onSubmitted: (value) =>
-                              print('onSubmitted value: $value')))
+                          suggestions: difficulties,
+                          onChanged: (value) {},
+                          onSubmitted: (value) {
+                            difficulty = value;
+                            _getCourse();
+                          }))
                 ],
               ),
               const Padding(padding: EdgeInsets.only(top: 40)),
@@ -548,15 +561,17 @@ class _CoursesPageState extends State<CoursesPage> {
                         )),
                   )),
               const Padding(padding: EdgeInsets.only(top: 26)),
-              NumberPaginator(
-                numberPages: totalPage,
-                onPageChange: (int index) {
-                  setState(() {
-                    currentPage = index;
-                  });
-                  _getCourse();
-                },
-              )
+              totalPage > 0
+                  ? NumberPaginator(
+                      numberPages: totalPage,
+                      onPageChange: (int index) {
+                        setState(() {
+                          currentPage = index;
+                        });
+                        _getCourse();
+                      },
+                    )
+                  : const Text("No data")
             ],
           ),
         ));

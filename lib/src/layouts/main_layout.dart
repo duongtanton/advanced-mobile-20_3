@@ -84,9 +84,10 @@ class _MainLayoutState extends State<MainLayout> {
   late SharedPreferences prefs;
 
   var user = null;
-  List<types.Message> _messages = [];
-  types.User _user =
-      const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
+  var toUserId = null;
+  var currentPageMessage = 1;
+  List<dynamic> _messages = [];
+  List<dynamic> _recipients = [];
 
   @override
   void initState() {
@@ -99,6 +100,9 @@ class _MainLayoutState extends State<MainLayout> {
   _asyncMethod() async {
     prefs = await SharedPreferences.getInstance();
     await _getUserInfo();
+    await _getAllRecipient();
+    toUserId = _recipients![0]!["toInfo"]!["id"];
+    await _getMessageById(toUserId);
   }
 
   _getUserInfo() async {
@@ -112,7 +116,31 @@ class _MainLayoutState extends State<MainLayout> {
     }
   }
 
+  _getAllRecipient() async {
+    final response = await _userService.getAllRecipient();
+    if (response['success']) {
+      setState(() {
+        _recipients = response['data'];
+      });
+    }
+  }
+
+  _getMessageById(id) async {
+    final response = await _userService.getMessageById(
+      id: id,
+      currentPage: currentPageMessage,
+    );
+    if (response['success']) {
+      setState(() {
+        _messages = response['data']["rows"];
+      });
+    }
+  }
+
   void _showChatDialog(BuildContext context) {
+    var toUser = _recipients.firstWhere((element) {
+      return element!["toInfo"]!["id"] == toUserId;
+    });
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -127,17 +155,29 @@ class _MainLayoutState extends State<MainLayout> {
                 child: Column(children: [
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: const Text(
-                  "Keegan",
+                child: Text(
+                  toUser!["toInfo"]!["name"] ?? "Tin nhắn mới",
                   style: TextStyle(fontSize: 30, color: Colors.black),
                 ),
               ),
               Expanded(
                 child: Chat(
-                  messages: _messages,
-                  onSendPressed: _handleSendPressed,
-                  user: _user,
-                ),
+                    messages: _messages
+                        .map((e) => types.TextMessage(
+                              author: types.User(
+                                id: e!["fromInfo"]!["id"],
+                                firstName: e!["fromInfo"]!["name"],
+                              ),
+                              createdAt: DateTime.now().millisecondsSinceEpoch,
+                              id: randomString(),
+                              text: e["content"],
+                            ))
+                        .toList(),
+                    onSendPressed: _handleSendPressed,
+                    user: types.User(
+                      id: user["id"],
+                      firstName: user["name"],
+                    )),
               ),
             ])),
             Container(
@@ -145,15 +185,21 @@ class _MainLayoutState extends State<MainLayout> {
               color: Colors.grey[200],
               margin: const EdgeInsets.only(top: 10),
               padding: const EdgeInsets.all(4),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Avatar(url: "", size: 60),
-                  // Add your user list widget here
-                  // Example:
-                ],
-              ),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: _recipients.map((e) {
+                    return GestureDetector(
+                      onTap: () {
+                        toUserId = e!["toInfo"]!["id"];
+                        _getMessageById(toUserId);
+                      },
+                      child: Avatar(
+                        url: e!["toInfo"]!["avatar"],
+                        size: 60,
+                      ),
+                    );
+                  }).toList()),
             ),
           ]),
         );
@@ -161,20 +207,19 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 
-  void _addMessage(types.Message message) {
+  void _addMessage(message) {
     setState(() {
       _messages.insert(0, message);
     });
   }
 
   void _handleSendPressed(types.PartialText message) {
-    final textMessage = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: randomString(),
-      text: message.text,
-    );
-
+    final textMessage = {
+      "partner": {"id": user["id"]},
+      "fromInfo": {"id": user["id"]},
+      "toInfo": {"id": toUserId},
+      "content": message.text,
+    };
     _addMessage(textMessage);
   }
 

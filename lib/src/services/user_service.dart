@@ -38,11 +38,62 @@ class UserService {
     if (tokens['access_token'] == null) {
       return {'success': false, 'message': 'Access token not found'};
     }
-    final response = await http.get(Uri.parse('$baseUrl/call/total'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${tokens['access_token']}'
-        });
+    final response = await http.get(Uri.parse('$baseUrl/call/total'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${tokens['access_token']}'
+    });
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Update profile successful',
+        'data': jsonDecode(response.body)
+      };
+    } else {
+      return {'success': false, 'message': 'Update profile failed'};
+    }
+  }
+
+  Future<Map<String, dynamic>> getAllRecipient() async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http
+        .get(Uri.parse('$baseUrl/message/get-all-recipient'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${tokens['access_token']}'
+    });
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Update profile successful',
+        'data': jsonDecode(response.body)['messages']
+      };
+    } else {
+      return {'success': false, 'message': 'Update profile failed'};
+    }
+  }
+
+  Future<Map<String, dynamic>> getMessageById({
+    id,
+    currentPage = 1,
+    perPage = 20,
+  }) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    var url = '$baseUrl/message/get/$id';
+    if (currentPage != null && perPage != null) {
+      url +=
+          '?page=$currentPage&perPage=$perPage&startTime=${DateTime.now().millisecondsSinceEpoch}';
+    }
+    final response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${tokens['access_token']}'
+    });
 
     if (response.statusCode == 200) {
       return {
