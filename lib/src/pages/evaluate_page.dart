@@ -302,13 +302,14 @@ class _EvaluatePageState extends State<EvaluatePage> {
                         child: Text("Bạn chưa có lịch sử học tập"),
                       )
                     ],
+              totalPage > 0 ?
               NumberPaginator(
                 numberPages: totalPage,
                 onPageChange: (int index) {
                   currentPage = index + 1;
                   _getSchedule();
                 },
-              )
+              ) : Container()
             ],
           ),
         ));

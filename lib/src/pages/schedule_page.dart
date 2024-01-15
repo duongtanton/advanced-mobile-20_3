@@ -362,10 +362,11 @@ class _SchedulePageState extends State<SchedulePage> {
         );
       }).toList(),
       const Padding(padding: EdgeInsets.only(top: 20)),
+      totalPage > 0 ?
       NumberPaginator(
         numberPages: totalPage,
         onPageChange: _handleChangePage,
-      )
+      ) : Container()
     ];
     return MainLayout(
         screen: "schedule",

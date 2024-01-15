@@ -1,9 +1,12 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
 import 'package:mobile_20120598/src/services/user_service.dart';
 import 'package:mobile_20120598/src/util/common_util.dart';
+import 'dart:io';
+import 'dart:async';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key, required this.title});
@@ -60,6 +63,14 @@ class _UserPageState extends State<UserPage> {
 
   void _updateUserProfile() {}
 
+  Future<void> _getImageFromGallery() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? files = await picker.pickImage(source: ImageSource.gallery);
+    if (files != null) {
+    } else {
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainLayout(
@@ -82,19 +93,26 @@ class _UserPageState extends State<UserPage> {
                   children: [
                     Row(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(90),
-                          child: Image.network(user["avatar"],
-                              height: 90, width: 90, fit: BoxFit.cover,
-                              errorBuilder: (BuildContext context,
-                                  Object exception, StackTrace? stackTrace) {
-                            return Image.asset(
-                              "assets/images/teacher.jpg",
-                              height: 80,
-                              width: 80,
-                              fit: BoxFit.cover,
-                            );
-                          }),
+                        GestureDetector(
+                          onTap: () {
+                            // Implement your logic to change avatar here
+                            _getImageFromGallery();
+                            print("Change avatar");
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(90),
+                            child: Image.network(user["avatar"],
+                                height: 90, width: 90, fit: BoxFit.cover,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                  return Image.asset(
+                                    "assets/images/teacher.jpg",
+                                    height: 80,
+                                    width: 80,
+                                    fit: BoxFit.cover,
+                                  );
+                                }),
+                          ),
                         ),
                         const Padding(padding: EdgeInsets.only(left: 20)),
                         Column(

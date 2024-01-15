@@ -136,7 +136,7 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                     ),
                     const Padding(padding: EdgeInsets.only(top: 16)),
                     Text(
-                      "Video hướng dẫn: ${topic["videoUrl"]}",
+                      "Video hướng dẫn: ${topic["videoUrl"] ?? "Chưa có"}",
                       style: const TextStyle(fontSize: 16),
                     ),
                     SizedBox(

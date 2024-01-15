@@ -41,14 +41,9 @@ class _MainLayoutState extends State<MainLayout> {
       "route": "/user",
     },
     {
-      "name": "Lịch học định kì",
-      "icon": Icons.book,
-      "route": "/schedule-lesson",
-    },
-    {
       "name": "Gia sư",
       "icon": Icons.person,
-      "route": "/teacher",
+      "route": "/",
     },
     {
       "name": "Lịch học",
@@ -82,6 +77,7 @@ class _MainLayoutState extends State<MainLayout> {
   ];
   final UserService _userService = UserService();
   late SharedPreferences prefs;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   var user = null;
   var toUserId = null;
@@ -101,11 +97,11 @@ class _MainLayoutState extends State<MainLayout> {
     prefs = await SharedPreferences.getInstance();
     await _getUserInfo();
     await _getAllRecipient();
-    toUserId = _recipients![0]!["toInfo"]!["id"];
+    toUserId = _recipients![0]!["partner"]!["id"];
     await _getMessageById(toUserId);
   }
 
-  _getUserInfo() async {
+  Future<void>  _getUserInfo() async {
     final response = await _userService.getCurrentInfo();
     if (response['success']) {
       setState(() {
@@ -116,7 +112,7 @@ class _MainLayoutState extends State<MainLayout> {
     }
   }
 
-  _getAllRecipient() async {
+  Future<void> _getAllRecipient() async {
     final response = await _userService.getAllRecipient();
     if (response['success']) {
       setState(() {
@@ -125,7 +121,7 @@ class _MainLayoutState extends State<MainLayout> {
     }
   }
 
-  _getMessageById(id) async {
+  Future<void> _getMessageById(id) async {
     final response = await _userService.getMessageById(
       id: id,
       currentPage: currentPageMessage,
@@ -138,71 +134,74 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   void _showChatDialog(BuildContext context) {
-    var toUser = _recipients.firstWhere((element) {
-      return element!["toInfo"]!["id"] == toUserId;
-    });
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
-      builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: Row(children: [
-            Expanded(
-                child: Column(children: [
-              Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Text(
-                  toUser!["toInfo"]!["name"] ?? "Tin nhắn mới",
-                  style: TextStyle(fontSize: 30, color: Colors.black),
-                ),
-              ),
+      builder: (BuildContext buildContext){
+        return StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter ){
+          var toUser = _recipients.firstWhere((element) {
+            return element!["partner"]!["id"] == toUserId;
+          });
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: Row(children: [
               Expanded(
-                child: Chat(
-                    messages: _messages
-                        .map((e) => types.TextMessage(
-                              author: types.User(
-                                id: e!["fromInfo"]!["id"],
-                                firstName: e!["fromInfo"]!["name"],
-                              ),
-                              createdAt: DateTime.now().millisecondsSinceEpoch,
-                              id: randomString(),
-                              text: e["content"],
-                            ))
-                        .toList(),
-                    onSendPressed: _handleSendPressed,
-                    user: types.User(
-                      id: user["id"],
-                      firstName: user["name"],
-                    )),
-              ),
-            ])),
-            Container(
-              width: 68,
-              color: Colors.grey[200],
-              margin: const EdgeInsets.only(top: 10),
-              padding: const EdgeInsets.all(4),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: _recipients.map((e) {
-                    return GestureDetector(
-                      onTap: () {
-                        toUserId = e!["toInfo"]!["id"];
-                        _getMessageById(toUserId);
-                      },
-                      child: Avatar(
-                        url: e!["toInfo"]!["avatar"],
-                        size: 60,
+                  child: Column(children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: Text(
+                        toUser!["partner"]!["name"] ?? "Tin nhắn mới",
+                        style: TextStyle(fontSize: 30, color: Colors.black),
                       ),
-                    );
-                  }).toList()),
-            ),
-          ]),
-        );
+                    ),
+                    Expanded(
+                      child: Chat(
+                          messages: _messages
+                              .map((e) => types.TextMessage(
+                            author: types.User(
+                              id: e!["fromInfo"]!["id"],
+                              firstName: e!["fromInfo"]!["name"],
+                            ),
+                            createdAt: DateTime.now().millisecondsSinceEpoch,
+                            id: randomString(),
+                            text: e["content"],
+                          ))
+                              .toList(),
+                          onSendPressed: _handleSendPressed,
+                          user: types.User(
+                            id: user["id"],
+                            firstName: user["name"],
+                          )),
+                    ),
+                  ])),
+              Container(
+                width: 68,
+                color: Colors.grey[200],
+                margin: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.all(4),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: _recipients.map((e) {
+                      return GestureDetector(
+                        onTap: () {
+                          toUserId = e!["partner"]!["id"];
+                          _getMessageById(toUserId)
+                          .whenComplete(() => stateSetter((){}));
+                        },
+                        child: Avatar(
+                          url: e!["partner"]!["avatar"],
+                          size: 60,
+                        ),
+                      );
+                    }).toList()),
+              ),
+            ]),
+          );
+        });
       },
     );
   }

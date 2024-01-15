@@ -51,8 +51,8 @@ class _CoursesPageState extends State<CoursesPage> {
   }
 
   _asyncMethod() async {
-    await _getCourse();
     await _getContentCategory();
+    await _getCourse();
   }
 
   _getCourse() async {
@@ -63,8 +63,13 @@ class _CoursesPageState extends State<CoursesPage> {
       var difficultyId = indexOfDifficulty == 0
           ? "asc"
           : (indexOfDifficulty == 1 ? "desc" : null);
-      var categoryId = contentCategories
-          .firstWhere((element) => element["title"] == category)?["id"];
+      var categoryId;
+      try {
+        categoryId = contentCategories
+            .firstWhere((element) => element["title"] == category)["id"];
+      } catch (e) {
+        categoryId = null;
+      }
 
       final response = await courseService.getCourse(
           currentPage: currentPage,
@@ -132,17 +137,12 @@ class _CoursesPageState extends State<CoursesPage> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, "/course-info");
-                        },
-                        child: const Icon(
-                          CupertinoIcons.upload_circle,
-                          size: 90,
-                        ),
-                      )
+                      Icon(
+                        CupertinoIcons.upload_circle,
+                        size: 90,
+                      ),
                     ],
                   ),
                   const Padding(padding: EdgeInsets.only(top: 20)),
@@ -346,7 +346,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                                               EdgeInsets.only(
                                                                   top: 30)),
                                                       Text("Intermediate • "
-                                                          "${object!["topics"]!.length ?? 0}"
+                                                          "${object?["topics"]?.length ?? 0}"
                                                           " Lessons")
                                                     ],
                                                   ),
@@ -454,7 +454,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                             ),
                                           ),
                                         );
-                                      }).toList()
+                                      })!.toList()
                                     : [const Text("No data")],
                               ),
                             )),
