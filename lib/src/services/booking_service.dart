@@ -78,10 +78,11 @@ class BookingService {
     );
 
     if (response.statusCode == 200) {
+      dynamic data = jsonDecode(response.body)['data'];
       return {
         'success': true,
         'message': 'Register successful',
-        'data': jsonDecode(response.body)['data'][0] ?? null
+        'data': data != null && data.length > 0 ? data[0] : null
       };
     } else {
       return {'success': false, 'message': 'Register failed'};

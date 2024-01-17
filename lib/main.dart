@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mobile_20120598/src/bloc/Lang.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/pages/become_tutor.dart';
 import 'package:mobile_20120598/src/pages/booking_page.dart';
@@ -33,77 +35,83 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '20120598',
-      initialRoute: "/sign-in",
-
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-                builder: (context) => const HomePage(title: ""),
-                settings: settings);
-          case '/sign-in':
-            return MaterialPageRoute(
-                builder: (context) => const SignInPage(title: "sign-in"),
-                settings: settings);
-          case '/sign-up':
-            return MaterialPageRoute(
-                builder: (context) => const SignUpPagePage(title: "sign-up"),
-                settings: settings);
-          case '/booking':
-            return MaterialPageRoute(
-                builder: (context) => const BookingPage(title: "booking"),
-                settings: settings);
-          case '/schedule':
-            return MaterialPageRoute(
-                builder: (context) => const SchedulePage(title: "schedule"),
-                settings: settings);
-          case '/evaluate':
-            return MaterialPageRoute(
-                builder: (context) => const EvaluatePage(title: "evaluate"),
-                settings: settings);
-          case '/courses':
-            return MaterialPageRoute(
-                builder: (context) => const CoursesPage(title: "courses"),
-                settings: settings);
-          case '/course-info':
-            return MaterialPageRoute(
-                builder: (context) =>
-                    const CourseInfoPage(title: "course-info"),
-                settings: settings);
-          case '/lesson-info':
-            return MaterialPageRoute(
-                builder: (context) =>
-                    const LessonInfoPage(title: "lesson-info"),
-                settings: settings);
-          case '/video-call':
-            return MaterialPageRoute(
-                builder: (context) => const VideoCallPage(title: "video-call"),
-                settings: settings);
-          case '/user':
-            return MaterialPageRoute(
-                builder: (context) => const UserPage(title: "user"),
-                settings: settings);
-          case '/become-tutor':
-            return MaterialPageRoute(
-                builder: (context) => const BecomeTutorPage(title: "become-tutor"),
-                settings: settings);
-          default:
-            // Handle unknown routes here
-            return MaterialPageRoute(
-                builder: (context) => const ErrorPage(title: "\\error"),
-                settings: settings);
-        }
-      },
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('vi', 'VN'),
-      ],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ]
-    );
+        title: '20120598',
+        initialRoute: "/sign-in",
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/':
+              return MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                        create: (context) => LangCubit(),
+                        child: const HomePage(title: ""),
+                      ),
+                  settings: settings);
+            case '/sign-in':
+              return MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                        create: (context) => LangCubit(),
+                        child: const SignInPage(title: "sign-in"),
+                      ),
+                  settings: settings);
+            case '/sign-up':
+              return MaterialPageRoute(
+                  builder: (context) => const SignUpPagePage(title: "sign-up"),
+                  settings: settings);
+            case '/booking':
+              return MaterialPageRoute(
+                  builder: (context) => const BookingPage(title: "booking"),
+                  settings: settings);
+            case '/schedule':
+              return MaterialPageRoute(
+                  builder: (context) => const SchedulePage(title: "schedule"),
+                  settings: settings);
+            case '/evaluate':
+              return MaterialPageRoute(
+                  builder: (context) => const EvaluatePage(title: "evaluate"),
+                  settings: settings);
+            case '/courses':
+              return MaterialPageRoute(
+                  builder: (context) => const CoursesPage(title: "courses"),
+                  settings: settings);
+            case '/course-info':
+              return MaterialPageRoute(
+                  builder: (context) =>
+                      const CourseInfoPage(title: "course-info"),
+                  settings: settings);
+            case '/lesson-info':
+              return MaterialPageRoute(
+                  builder: (context) =>
+                      const LessonInfoPage(title: "lesson-info"),
+                  settings: settings);
+            case '/video-call':
+              return MaterialPageRoute(
+                  builder: (context) =>
+                      const VideoCallPage(title: "video-call"),
+                  settings: settings);
+            case '/user':
+              return MaterialPageRoute(
+                  builder: (context) => const UserPage(title: "user"),
+                  settings: settings);
+            case '/become-tutor':
+              return MaterialPageRoute(
+                  builder: (context) =>
+                      const BecomeTutorPage(title: "become-tutor"),
+                  settings: settings);
+            default:
+              // Handle unknown routes here
+              return MaterialPageRoute(
+                  builder: (context) => const ErrorPage(title: "\\error"),
+                  settings: settings);
+          }
+        },
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('vi', 'VN'),
+        ],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ]);
   }
 }

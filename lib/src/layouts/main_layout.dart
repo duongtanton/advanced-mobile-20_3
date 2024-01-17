@@ -3,10 +3,13 @@ import 'dart:math';
 
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mobile_20120598/src/bloc/Lang.dart';
 import 'package:mobile_20120598/src/components/avatar.dart';
+import 'package:mobile_20120598/src/lang/common.dart';
 import 'package:mobile_20120598/src/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,7 +50,7 @@ class _MainLayoutState extends State<MainLayout> {
     },
     {
       "name": "Lịch học",
-      "icon": Icons.person_off,
+      "icon": Icons.schedule,
       "route": "/schedule",
     },
     {
@@ -62,7 +65,7 @@ class _MainLayoutState extends State<MainLayout> {
     },
     {
       "name": "Đăng kí làm gia sư",
-      "icon": Icons.app_registration_rounded,
+      "icon": Icons.app_registration,
       "route": "/become-tutor",
     },
     {
@@ -72,12 +75,11 @@ class _MainLayoutState extends State<MainLayout> {
     },
   ];
   List<dynamic> languages = [
-    {"name": "English", "code": "en", "country": "US"},
+    {"name": "Tiếng anh", "code": "en", "country": "US"},
     {"name": "Việt nam", "code": "vi", "country": "VN"},
   ];
   final UserService _userService = UserService();
   late SharedPreferences prefs;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   var user = null;
   var toUserId = null;
@@ -95,13 +97,14 @@ class _MainLayoutState extends State<MainLayout> {
 
   _asyncMethod() async {
     prefs = await SharedPreferences.getInstance();
+    currentLanguage = prefs.getString('currentLanguage') ?? "vi";
     await _getUserInfo();
     await _getAllRecipient();
     toUserId = _recipients![0]!["partner"]!["id"];
     await _getMessageById(toUserId);
   }
 
-  Future<void>  _getUserInfo() async {
+  Future<void> _getUserInfo() async {
     final response = await _userService.getCurrentInfo();
     if (response['success']) {
       setState(() {
@@ -140,8 +143,9 @@ class _MainLayoutState extends State<MainLayout> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
-      builder: (BuildContext buildContext){
-        return StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter ){
+      builder: (BuildContext buildContext) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter stateSetter) {
           var toUser = _recipients.firstWhere((element) {
             return element!["partner"]!["id"] == toUserId;
           });
@@ -150,33 +154,34 @@ class _MainLayoutState extends State<MainLayout> {
             child: Row(children: [
               Expanded(
                   child: Column(children: [
-                    Container(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        toUser!["partner"]!["name"] ?? "Tin nhắn mới",
-                        style: TextStyle(fontSize: 30, color: Colors.black),
-                      ),
-                    ),
-                    Expanded(
-                      child: Chat(
-                          messages: _messages
-                              .map((e) => types.TextMessage(
-                            author: types.User(
-                              id: e!["fromInfo"]!["id"],
-                              firstName: e!["fromInfo"]!["name"],
-                            ),
-                            createdAt: DateTime.now().millisecondsSinceEpoch,
-                            id: randomString(),
-                            text: e["content"],
-                          ))
-                              .toList(),
-                          onSendPressed: _handleSendPressed,
-                          user: types.User(
-                            id: user["id"],
-                            firstName: user["name"],
-                          )),
-                    ),
-                  ])),
+                Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: Text(
+                    toUser!["partner"]!["name"] ?? "Tin nhắn mới",
+                    style: TextStyle(fontSize: 30, color: Colors.black),
+                  ),
+                ),
+                Expanded(
+                  child: Chat(
+                      messages: _messages
+                          .map((e) => types.TextMessage(
+                                author: types.User(
+                                  id: e!["fromInfo"]!["id"],
+                                  firstName: e!["fromInfo"]!["name"],
+                                ),
+                                createdAt:
+                                    DateTime.now().millisecondsSinceEpoch,
+                                id: randomString(),
+                                text: e["content"],
+                              ))
+                          .toList(),
+                      onSendPressed: _handleSendPressed,
+                      user: types.User(
+                        id: user["id"],
+                        firstName: user["name"],
+                      )),
+                ),
+              ])),
               Container(
                 width: 68,
                 color: Colors.grey[200],
@@ -190,7 +195,7 @@ class _MainLayoutState extends State<MainLayout> {
                         onTap: () {
                           toUserId = e!["partner"]!["id"];
                           _getMessageById(toUserId)
-                          .whenComplete(() => stateSetter((){}));
+                              .whenComplete(() => stateSetter(() {}));
                         },
                         child: Avatar(
                           url: e!["partner"]!["avatar"],
@@ -224,95 +229,151 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leadingWidth: 180,
-          leading: GestureDetector(
-              onTap: () => Navigator.pushNamed(context, "/"),
-              child: Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: SvgPicture.asset("assets/images/logo.svg",
-                      width: 180, height: 40))),
-          backgroundColor: Colors.white,
-          bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(1.0),
-              child: Container(
-                color: Colors.grey[300],
-                height: 1.0,
-              )),
-          actions: [
-            PopupMenuButton(
-                itemBuilder: (BuildContext bc) => languages
-                    .map((e) => PopupMenuItem(
-                        value: currentLanguage,
-                        onTap: () => {
-                              setState(() {
-                                currentLanguage = e["code"];
-                              })
-                            },
-                        child: Row(
-                          children: [
-                            CountryFlag.fromCountryCode(e["country"],
-                                width: 30, height: 40),
-                            const Padding(padding: EdgeInsets.only(right: 10)),
-                            Text(e["name"])
-                          ],
-                        )))
-                    .toList(),
-                onSelected: (value) {},
-                icon: currentLanguage == "vi"
-                    ? CountryFlag.fromCountryCode("VN", width: 30, height: 40)
-                    : CountryFlag.fromCountryCode("US", width: 30, height: 40),
-                position: PopupMenuPosition.under),
-            const Padding(padding: EdgeInsets.only(right: 10)),
-            widget.showNavigators
-                ? PopupMenuButton(
-                    itemBuilder: (BuildContext bc) => navigators
-                        .map((e) => PopupMenuItem(
-                            value: e["name"],
-                            onTap: () =>
-                                Navigator.pushNamed(context, e["route"]),
-                            child: Row(
-                              children: [
-                                Icon(e["icon"]),
-                                const Padding(
-                                    padding: EdgeInsets.only(right: 10)),
-                                Text(e["name"])
-                              ],
-                            )))
-                        .toList(),
-                    onSelected: (value) {},
-                    icon: const Icon(Icons.account_circle),
-                    position: PopupMenuPosition.under)
-                : Container(),
-            const Padding(padding: EdgeInsets.only(right: 10)),
-          ],
-        ),
-        body: Localizations.override(
-            context: context,
-            locale: Locale(currentLanguage),
-            child: Builder(builder: (BuildContext context) {
-              return SingleChildScrollView(child: widget.body);
-            })),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              heroTag: "Gift",
-              onPressed: () => {},
-              tooltip: 'Gift',
-              child: const Icon(Icons.gif_box),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 8)),
-            FloatingActionButton(
-              heroTag: "Message",
-              onPressed: () {
-                _showChatDialog(context);
-              },
-              tooltip: 'Message',
-              child: const Icon(Icons.message),
-            ),
-          ],
-        ));
+    navigators = [
+      {
+        "name": user?["name"] ?? commonLang[currentLanguage]!["myAccount"],
+        "icon": Icons.ice_skating,
+        "route": "/user",
+      },
+      {
+        "name": commonLang[currentLanguage]!["tutor"],
+        "icon": Icons.person,
+        "route": "/",
+      },
+      {
+        "name": commonLang[currentLanguage]!["schedule"],
+        "icon": Icons.schedule,
+        "route": "/schedule",
+      },
+      {
+        "name": commonLang[currentLanguage]!["history"],
+        "icon": Icons.history,
+        "route": "/evaluate",
+      },
+      {
+        "name": commonLang[currentLanguage]!["course"],
+        "icon": Icons.golf_course,
+        "route": "/courses",
+      },
+      {
+        "name": commonLang[currentLanguage]!["becomeTutor"],
+        "icon": Icons.app_registration,
+        "route": "/become-tutor",
+      },
+      {
+        "name": commonLang[currentLanguage]!["signOut"],
+        "icon": Icons.logout,
+        "route": "/sign-in",
+      },
+    ];
+    languages = [
+      {
+        "name": commonLang[currentLanguage]!["english"],
+        "code": "en",
+        "country": "US"
+      },
+      {
+        "name": commonLang[currentLanguage]!["vietnamese"],
+        "code": "vi",
+        "country": "VN"
+      },
+    ];
+    return BlocBuilder<LangCubit, String>(builder: (context, lang){
+      currentLanguage = lang;
+      return Scaffold(
+          appBar: AppBar(
+            leadingWidth: 180,
+            leading: GestureDetector(
+                onTap: () => Navigator.pushNamed(context, "/"),
+                child: Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: SvgPicture.asset("assets/images/logo.svg",
+                        width: 180, height: 40))),
+            backgroundColor: Colors.white,
+            bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1.0),
+                child: Container(
+                  color: Colors.grey[300],
+                  height: 1.0,
+                )),
+            actions: [
+              PopupMenuButton(
+                  itemBuilder: (BuildContext bc) => languages
+                      .map((e) => PopupMenuItem(
+                      value: currentLanguage,
+                      onTap: () async {
+                        context.read<LangCubit>().change(e["code"]);
+                        await prefs.setString('currentLanguage', e["code"]);
+                      },
+                      child: Row(
+                        children: [
+                          CountryFlag.fromCountryCode(e["country"],
+                              width: 30, height: 40),
+                          const Padding(padding: EdgeInsets.only(right: 10)),
+                          Text(e["name"])
+                        ],
+                      )))
+                      .toList(),
+                  onSelected: (value) {},
+                  icon: currentLanguage == "vi"
+                      ? CountryFlag.fromCountryCode("VN", width: 30, height: 40)
+                      : CountryFlag.fromCountryCode("US", width: 30, height: 40),
+                  position: PopupMenuPosition.under),
+              const Padding(padding: EdgeInsets.only(right: 10)),
+              widget.showNavigators
+                  ? PopupMenuButton(
+                  itemBuilder: (BuildContext bc) => navigators
+                      .map((e) => PopupMenuItem(
+                      value: e["name"],
+                      onTap: () =>
+                          Navigator.pushNamed(context, e["route"]),
+                      child: Row(
+                        children: [
+                          e["route"] == "/user"
+                              ? Avatar(
+                              url: user != null ? user["avatar"] : "",
+                              size: 30)
+                              : Icon(e["icon"]),
+                          const Padding(
+                              padding: EdgeInsets.only(right: 10)),
+                          Text(e["name"])
+                        ],
+                      )))
+                      .toList(),
+                  onSelected: (value) {},
+                  icon: Avatar(
+                      url: user != null ? user["avatar"] : "", size: 30),
+                  position: PopupMenuPosition.under)
+                  : Container(),
+              const Padding(padding: EdgeInsets.only(right: 10)),
+            ],
+          ),
+          body: Localizations.override(
+              context: context,
+              locale: Locale(currentLanguage),
+              child: Builder(builder: (BuildContext context) {
+                return SingleChildScrollView(child: widget.body);
+              })),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                heroTag: "Gift",
+                onPressed: () => {},
+                tooltip: 'Gift',
+                child: const Icon(Icons.gif_box),
+              ),
+              const Padding(padding: EdgeInsets.only(top: 8)),
+              FloatingActionButton(
+                heroTag: "Message",
+                onPressed: () {
+                  _showChatDialog(context);
+                },
+                tooltip: 'Message',
+                child: const Icon(Icons.message),
+              ),
+            ],
+          ));
+    });
   }
 }

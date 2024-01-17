@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_20120598/src/components/avatar.dart';
-import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
 import 'package:mobile_20120598/src/services/user_service.dart';
 
@@ -43,8 +42,7 @@ class _BecomeTutorPageState extends State<BecomeTutorPage> {
         user = response['data'];
         _nameController.text = user['name'] ?? '';
         _emailController.text = user['email'] ?? '';
-        _countryController.text =
-            CommonConstant.countryMap[user?['country']] ?? '';
+        _countryController.text = user?['country'] ?? '';
         _phoneController.text = user['phone'] ?? '';
         _dobController.text = user['birthday'] ?? '';
         _educationController.text = user['level'] ?? '';
@@ -62,6 +60,14 @@ class _BecomeTutorPageState extends State<BecomeTutorPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool waitingAccept = user != null &&
+        user['tutorInfo'] != null &&
+        user['tutorInfo']['isActivated'] == false;
+    if (waitingAccept) {
+      setState(() {
+        _currentStep = 2;
+      });
+    }
     return MainLayout(
         screen: "user",
         showNavigators: true,
@@ -185,14 +191,17 @@ class _BecomeTutorPageState extends State<BecomeTutorPage> {
                                 size: 150,
                               ),
                               TextField(
+                                controller: _nameController,
                                 decoration:
                                     InputDecoration(labelText: 'Tên gia sư'),
                               ),
                               TextField(
+                                controller: _countryController,
                                 decoration:
                                     InputDecoration(labelText: 'Tôi đến từ'),
                               ),
                               TextField(
+                                controller: _dobController,
                                 decoration:
                                     InputDecoration(labelText: 'Ngày sinh'),
                               ),

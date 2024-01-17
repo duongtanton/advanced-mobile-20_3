@@ -105,4 +105,56 @@ class UserService {
       return {'success': false, 'message': 'Update profile failed'};
     }
   }
+
+  Future<Map<String, dynamic>> updateProfile({name, phone}) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final response = await http.put(Uri.parse('$baseUrl/user/info'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${tokens['access_token']}'
+        },
+        body: jsonEncode({'name': name, 'phone': phone}));
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Update profile successful',
+        'data': jsonDecode(response.body)["user"]
+      };
+    } else {
+      return {'success': false, 'message': 'Update profile failed'};
+    }
+  }
+
+
+  Future<Map<String, dynamic>> updateAvatar(avatar) async {
+    final tokens = await UtilService.getTokens();
+    if (tokens['access_token'] == null) {
+      return {'success': false, 'message': 'Access token not found'};
+    }
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/user/uploadAvatar'),
+    );
+    request.headers.addAll({
+      'Content-Type': 'multipart/form-data',
+      'Authorization': 'Bearer ${tokens['access_token']}'
+    });
+    request.files.add(await http.MultipartFile.fromPath('avatar', avatar.path));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      return {
+        'success': true,
+        'message': 'Update avatar successful',
+        'data': jsonDecode(await response.stream.bytesToString())
+      };
+    } else {
+      return {'success': false, 'message': 'Update avatar failed'};
+    }
+  }
 }

@@ -4,7 +4,7 @@ class Avatar extends StatelessWidget {
   const Avatar(
       {super.key,
       required this.url,
-      this.defaultUrl = "assets/images/teacher.jpg",
+      this.defaultUrl = "assets/images/default-avatar.png",
       this.size = 80});
 
   final String url;

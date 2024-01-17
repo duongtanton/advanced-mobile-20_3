@@ -46,8 +46,7 @@ class _UserPageState extends State<UserPage> {
         user = response['data'];
         _nameController.text = user['name'] ?? '';
         _emailController.text = user['email'] ?? '';
-        _countryController.text =
-            CommonConstant.countryMap[user?['country']] ?? '';
+        _countryController.text =user!['country'] ?? '';
         _phoneController.text = user['phone'] ?? '';
         _dobController.text = user['birthday'] ?? '';
         _educationController.text = user['level'] ?? '';
@@ -56,20 +55,50 @@ class _UserPageState extends State<UserPage> {
                 ?.toList()
                 .join(',') ??
             '';
-        _scheduleController.text = user['schedule'] ?? '';
+        _scheduleController.text = user['studySchedule'] ?? '';
       });
     }
   }
 
-  void _updateUserProfile() {}
+  void _updateUserProfile() async {
+    final response = await _userService.updateProfile(
+      name: _nameController.text,
+      phone: _phoneController.text,
+    );
+    if (response['success']) {
+      setState(() {
+        user = response['data'];
+        _nameController.text = user['name'] ?? '';
+        _emailController.text = user['email'] ?? '';
+        _countryController.text = user!['country'] ?? '';
+        _phoneController.text = user['phone'] ?? '';
+        _dobController.text = user['birthday'] ?? '';
+        _educationController.text = user['level'] ?? '';
+        _courseController.text = user['learnTopics']
+                ?.map((item) => item['name'])
+                ?.toList()
+                .join(',') ??
+            '';
+        _scheduleController.text = user['studySchedule'] ?? '';
+      });
+    }
+  }
 
   Future<void> _getImageFromGallery() async {
     final ImagePicker picker = ImagePicker();
     final XFile? files = await picker.pickImage(source: ImageSource.gallery);
     if (files != null) {
+      dynamic response  = await _userService.updateAvatar(File(files.path));
+      if (response['success']) {
+        setState(() {
+          user = response['data'];
+        });
+      }
     } else {
+      print('No image selected.');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +172,7 @@ class _UserPageState extends State<UserPage> {
                             const Padding(padding: EdgeInsets.only(top: 6)),
                             Row(
                                 children: CommonUtil.renderStars(
-                                    user["rating"] ?? 5, 5, 18)),
+                                    user["avgRating"] ?? 5, 5, 18)),
                             const Padding(padding: EdgeInsets.only(top: 6)),
                             Row(
                               children: [
