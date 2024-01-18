@@ -24,7 +24,6 @@ class _SignInPageState extends State<SignInPage> {
   bool _obscured = false;
   String currentMode = "mail";
   String step = "signin";
-  String currentLanguage = "vi";
 
   final textFieldFocusNode = FocusNode();
   final TextEditingController _emailController = TextEditingController();
@@ -46,7 +45,6 @@ class _SignInPageState extends State<SignInPage> {
   _asyncMethod() async {
     await _checkIfIsLogged();
     prefs = await SharedPreferences.getInstance();
-    currentLanguage = prefs.getString('currentLanguage') ?? "vi";
     _googleSignIn = GoogleSignIn(
       scopes: [
         'email',
@@ -174,7 +172,6 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<LangCubit, String>(
       builder: (context, lang){
-        currentLanguage = lang;
         return MainLayout(
             screen: "signin_page",
             body: Column(
@@ -187,12 +184,12 @@ class _SignInPageState extends State<SignInPage> {
                   child: Column(
                     children: [
                       const Padding(padding: EdgeInsets.only(top: 40)),
-                      Text(signin[currentLanguage]!["signin"]!,
+                      Text(signin[lang]!["signin"]!,
                           style: const TextStyle(
                               fontSize: 34, color: Color.fromRGBO(0, 113, 240, 1))),
                       const Padding(padding: EdgeInsets.only(top: 20)),
                       Text(
-                        signin[currentLanguage]!["title"]!,
+                        signin[lang]!["title"]!,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 18,
@@ -211,8 +208,8 @@ class _SignInPageState extends State<SignInPage> {
                                 ? "0987795761"
                                 : "mail@example.com",
                             label: Text(currentMode == "mb"
-                                ? signin[currentLanguage]!["phone"]!
-                                : signin[currentLanguage]!["emailAddress"]!)),
+                                ? signin[lang]!["phone"]!
+                                : signin[lang]!["emailAddress"]!)),
                         controller: _emailController,
                       ),
                       const Padding(padding: EdgeInsets.only(top: 20)),
@@ -221,7 +218,7 @@ class _SignInPageState extends State<SignInPage> {
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
-                            label: Text(signin[currentLanguage]!["password"]!),
+                            label: Text(signin[lang]!["password"]!),
                             suffixIcon: GestureDetector(
                                 onTap: _toggleObscured,
                                 child: Icon(
@@ -236,7 +233,7 @@ class _SignInPageState extends State<SignInPage> {
                       GestureDetector(
                         onTap: _forgetPassword,
                         child: Text(
-                          signin[currentLanguage]!["forgotPassword"]!,
+                          signin[lang]!["forgotPassword"]!,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                               color: Colors.blue,
@@ -252,10 +249,10 @@ class _SignInPageState extends State<SignInPage> {
                               backgroundColor: MaterialStateColor.resolveWith(
                                       (states) =>
                                   const Color.fromRGBO(0, 113, 240, 1))),
-                          child: Text(signin[currentLanguage]!["signin"]!,
+                          child: Text(signin[lang]!["signin"]!,
                               style: const TextStyle(color: Colors.white))),
                       const Padding(padding: EdgeInsets.only(top: 30)),
-                      Text(signin[currentLanguage]!["orContinueWith"]!),
+                      Text(signin[lang]!["orContinueWith"]!),
                       Container(
                           padding: const EdgeInsets.only(top: 20),
                           child: Row(
@@ -293,13 +290,13 @@ class _SignInPageState extends State<SignInPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(signin[currentLanguage]!["notAccount"]!),
+                          Text(signin[lang]!["notAccount"]!),
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(context, "/sign-up");
                             },
                             child: Text(
-                              signin[currentLanguage]!["signUp"]!,
+                              signin[lang]!["signUp"]!,
                               style: const TextStyle(
                                   color: Colors.blue,
                                   decoration: TextDecoration.underline),

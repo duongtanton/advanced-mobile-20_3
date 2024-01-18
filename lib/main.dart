@@ -17,6 +17,7 @@ import 'package:mobile_20120598/src/pages/signin_page.dart';
 import 'package:mobile_20120598/src/pages/signup_page.dart';
 import 'package:mobile_20120598/src/pages/user_page.dart';
 import 'package:mobile_20120598/src/pages/video_call_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 Future main() async {
@@ -25,12 +26,15 @@ Future main() async {
   await dotenv.load(fileName: '.env.$environment');
   await CommonConstant.loadCountries();
   timeago.setLocaleMessages('vi', timeago.ViMessages());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  runApp(const MyApp());
+  runApp(MyApp(prefs: prefs));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key, required this.prefs});
+
+  SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -42,65 +46,136 @@ class MyApp extends StatelessWidget {
             case '/':
               return MaterialPageRoute(
                   builder: (context) => BlocProvider(
-                        create: (context) => LangCubit(),
+                        create: (context) {
+                          String lang =
+                              prefs.getString('lang') ?? 'vi';
+                          return LangCubit(lang);
+                        },
                         child: const HomePage(title: ""),
                       ),
                   settings: settings);
             case '/sign-in':
               return MaterialPageRoute(
                   builder: (context) => BlocProvider(
-                        create: (context) => LangCubit(),
+                        create: (context) {
+                          String lang =
+                              prefs.getString('lang') ?? 'vi';
+                          return LangCubit(lang);
+                        },
                         child: const SignInPage(title: "sign-in"),
                       ),
                   settings: settings);
             case '/sign-up':
               return MaterialPageRoute(
-                  builder: (context) => const SignUpPagePage(title: "sign-up"),
+                  builder: (context) => BlocProvider(
+                        create: (context) {
+                          String lang =
+                              prefs.getString('lang') ?? 'vi';
+                          return LangCubit(lang);
+                        },
+                        child: const SignUpPagePage(title: "sign-up"),
+                      ),
                   settings: settings);
             case '/booking':
               return MaterialPageRoute(
-                  builder: (context) => const BookingPage(title: "booking"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const BookingPage(title: "booking"),
+                    );
+                  },
                   settings: settings);
             case '/schedule':
               return MaterialPageRoute(
-                  builder: (context) => const SchedulePage(title: "schedule"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const SchedulePage(title: "schedule"),
+                    );
+                  },
                   settings: settings);
             case '/evaluate':
               return MaterialPageRoute(
-                  builder: (context) => const EvaluatePage(title: "evaluate"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const EvaluatePage(title: "evaluate"),
+                    );
+                  },
                   settings: settings);
             case '/courses':
               return MaterialPageRoute(
-                  builder: (context) => const CoursesPage(title: "courses"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const CoursesPage(title: "courses"),
+                    );
+                  },
                   settings: settings);
             case '/course-info':
               return MaterialPageRoute(
-                  builder: (context) =>
-                      const CourseInfoPage(title: "course-info"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const CourseInfoPage(title: "course-info"),
+                    );
+                  },
                   settings: settings);
             case '/lesson-info':
               return MaterialPageRoute(
-                  builder: (context) =>
-                      const LessonInfoPage(title: "lesson-info"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const LessonInfoPage(title: "lesson-info"),
+                    );
+                  },
                   settings: settings);
             case '/video-call':
               return MaterialPageRoute(
-                  builder: (context) =>
-                      const VideoCallPage(title: "video-call"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const VideoCallPage(title: "video-call"),
+                    );
+                  },
                   settings: settings);
             case '/user':
               return MaterialPageRoute(
-                  builder: (context) => const UserPage(title: "user"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const UserPage(title: "user"),
+                    );
+                  },
                   settings: settings);
             case '/become-tutor':
               return MaterialPageRoute(
-                  builder: (context) =>
-                      const BecomeTutorPage(title: "become-tutor"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const BecomeTutorPage(title: "become-tutor"),
+                    );
+                  },
                   settings: settings);
             default:
               // Handle unknown routes here
               return MaterialPageRoute(
-                  builder: (context) => const ErrorPage(title: "\\error"),
+                  builder: (context) {
+                    String lang = prefs.getString('lang') ?? 'vi';
+                    return BlocProvider(
+                      create: (context) => LangCubit(lang),
+                      child: const ErrorPage(title: "error"),
+                    );
+                  },
                   settings: settings);
           }
         },

@@ -36,7 +36,6 @@ String randomString() {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  String currentLanguage = "vi";
   List<dynamic> navigators = [
     {
       "name": "Tài khoản của tôi",
@@ -97,7 +96,6 @@ class _MainLayoutState extends State<MainLayout> {
 
   _asyncMethod() async {
     prefs = await SharedPreferences.getInstance();
-    currentLanguage = prefs.getString('currentLanguage') ?? "vi";
     await _getUserInfo();
     await _getAllRecipient();
     toUserId = _recipients![0]!["partner"]!["id"];
@@ -229,57 +227,56 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    navigators = [
-      {
-        "name": user?["name"] ?? commonLang[currentLanguage]!["myAccount"],
-        "icon": Icons.ice_skating,
-        "route": "/user",
-      },
-      {
-        "name": commonLang[currentLanguage]!["tutor"],
-        "icon": Icons.person,
-        "route": "/",
-      },
-      {
-        "name": commonLang[currentLanguage]!["schedule"],
-        "icon": Icons.schedule,
-        "route": "/schedule",
-      },
-      {
-        "name": commonLang[currentLanguage]!["history"],
-        "icon": Icons.history,
-        "route": "/evaluate",
-      },
-      {
-        "name": commonLang[currentLanguage]!["course"],
-        "icon": Icons.golf_course,
-        "route": "/courses",
-      },
-      {
-        "name": commonLang[currentLanguage]!["becomeTutor"],
-        "icon": Icons.app_registration,
-        "route": "/become-tutor",
-      },
-      {
-        "name": commonLang[currentLanguage]!["signOut"],
-        "icon": Icons.logout,
-        "route": "/sign-in",
-      },
-    ];
-    languages = [
-      {
-        "name": commonLang[currentLanguage]!["english"],
-        "code": "en",
-        "country": "US"
-      },
-      {
-        "name": commonLang[currentLanguage]!["vietnamese"],
-        "code": "vi",
-        "country": "VN"
-      },
-    ];
     return BlocBuilder<LangCubit, String>(builder: (context, lang){
-      currentLanguage = lang;
+      navigators = [
+        {
+          "name": user?["name"] ?? commonLang[lang]!["myAccount"],
+          "icon": Icons.ice_skating,
+          "route": "/user",
+        },
+        {
+          "name": commonLang[lang]!["tutor"],
+          "icon": Icons.person,
+          "route": "/",
+        },
+        {
+          "name": commonLang[lang]!["schedule"],
+          "icon": Icons.schedule,
+          "route": "/schedule",
+        },
+        {
+          "name": commonLang[lang]!["history"],
+          "icon": Icons.history,
+          "route": "/evaluate",
+        },
+        {
+          "name": commonLang[lang]!["course"],
+          "icon": Icons.golf_course,
+          "route": "/courses",
+        },
+        {
+          "name": commonLang[lang]!["becomeTutor"],
+          "icon": Icons.app_registration,
+          "route": "/become-tutor",
+        },
+        {
+          "name": commonLang[lang]!["signOut"],
+          "icon": Icons.logout,
+          "route": "/sign-in",
+        },
+      ];
+      languages = [
+        {
+          "name": commonLang[lang]!["english"],
+          "code": "en",
+          "country": "US"
+        },
+        {
+          "name": commonLang[lang]!["vietnamese"],
+          "code": "vi",
+          "country": "VN"
+        },
+      ];
       return Scaffold(
           appBar: AppBar(
             leadingWidth: 180,
@@ -300,10 +297,10 @@ class _MainLayoutState extends State<MainLayout> {
               PopupMenuButton(
                   itemBuilder: (BuildContext bc) => languages
                       .map((e) => PopupMenuItem(
-                      value: currentLanguage,
+                      value: lang,
                       onTap: () async {
                         context.read<LangCubit>().change(e["code"]);
-                        await prefs.setString('currentLanguage', e["code"]);
+                        await prefs.setString('lang', e["code"]);
                       },
                       child: Row(
                         children: [
@@ -315,7 +312,7 @@ class _MainLayoutState extends State<MainLayout> {
                       )))
                       .toList(),
                   onSelected: (value) {},
-                  icon: currentLanguage == "vi"
+                  icon: lang == "vi"
                       ? CountryFlag.fromCountryCode("VN", width: 30, height: 40)
                       : CountryFlag.fromCountryCode("US", width: 30, height: 40),
                   position: PopupMenuPosition.under),
@@ -350,7 +347,7 @@ class _MainLayoutState extends State<MainLayout> {
           ),
           body: Localizations.override(
               context: context,
-              locale: Locale(currentLanguage),
+              locale: Locale(lang),
               child: Builder(builder: (BuildContext context) {
                 return SingleChildScrollView(child: widget.body);
               })),
