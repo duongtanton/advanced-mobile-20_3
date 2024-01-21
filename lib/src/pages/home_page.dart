@@ -5,6 +5,8 @@ import 'package:date_count_down/date_count_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile_20120598/src/bloc/Lang.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/lang/home.dart';
@@ -53,6 +55,9 @@ class _HomePageState extends State<HomePage> {
   var nextBooking = null;
   var totalMinutes = "";
 
+  var jitsiMeet = JitsiMeet();
+  var options;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -74,6 +79,24 @@ class _HomePageState extends State<HomePage> {
       if (value["success"]) {
         setState(() {
           nextBooking = value["data"];
+          var studentMeetingLink = nextBooking!["studentMeetingLink"];
+          var token = studentMeetingLink!.split("token=")!.last;
+          var data = JwtDecoder.decode(token);
+          var userBeCalled = data!["userBeCalled"];
+          var userCall = data!["userCall"];
+          options = JitsiMeetConferenceOptions(
+            room: data!["room"],
+            configOverrides: {
+              "startWithAudioMuted": false,
+              "startWithVideoMuted": false,
+              "subject": "Call with ${userBeCalled!["name"]}"
+            },
+            featureFlags: {"unsaferoomwarning.enabled": false},
+            userInfo: JitsiMeetUserInfo(
+              displayName: userCall!["name"],
+              email: userCall["email"],
+            ),
+          );
         });
       }
     });
@@ -117,7 +140,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LangCubit, String>(builder: (context, lang) {
+    return BlocBuilder<GlobalStateCubit, GlobalState>(
+        builder: (context, globalState) {
+      String lang = globalState.lang;
+      String theme = globalState.theme;
       locations = {
         'all': homeLang[lang]!['all']!,
         'isVietnamese': homeLang[lang]!['vietnam']!,
@@ -126,177 +152,184 @@ class _HomePageState extends State<HomePage> {
       };
       List<Widget> tutorWidgets = tutors
           .map((item) => Container(
-        padding: const EdgeInsets.only(
-            top: 20, bottom: 20, left: 20, right: 20),
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(80),
-                  child: Image.network(item["avatar"],
-                      height: 80, width: 80, fit: BoxFit.cover,
-                      errorBuilder: (BuildContext context,
-                          Object exception, StackTrace? stackTrace) {
-                        return Image.asset(
-                          "assets/images/teacher.jpg",
-                          height: 80,
-                          width: 80,
-                          fit: BoxFit.cover,
-                        );
-                      }),
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 20, left: 20, right: 20),
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(80),
+                          child: Image.network(item["avatar"],
+                              height: 80, width: 80, fit: BoxFit.cover,
+                              errorBuilder: (BuildContext context,
+                                  Object exception, StackTrace? stackTrace) {
+                            return Image.asset(
+                              "assets/images/teacher.jpg",
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.cover,
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          item["name"],
+                          style: const TextStyle(
+                              fontSize: 26, fontWeight: FontWeight.w600),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            tutorService
+                                .toggleFavorite(item["id"])
+                                .then((value) {
+                              if (value["success"]) {
+                                setState(() {
+                                  item["isFavoriteTutor"] =
+                                      item?["isFavoriteTutor"] == null
+                                          ? true
+                                          : !item["isFavoriteTutor"];
+                                });
+                              }
+                            });
+                          },
+                          child: item["isFavoriteTutor"] == true
+                              ? const Icon(Icons.favorite, color: Colors.red)
+                              : const Icon(Icons.favorite_border),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        CountryFlag.fromCountryCode(
+                          item['country'] ?? "VN",
+                          height: 26,
+                          width: 30,
+                          borderRadius: 8,
+                        ),
+                        const Padding(padding: EdgeInsets.only(left: 10)),
+                        Text(CommonConstant.countryMap[item['country']] ?? "")
+                      ],
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 4)),
+                    Row(
+                      children:
+                          CommonUtil.renderStars(item['rating'] ?? 5, 5, 13),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 26)),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 6,
+                      children: null != item["specialties"]
+                          ? item["specialties"]
+                              .split(',')
+                              .map<Widget>(
+                                (item) => Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 8, right: 12, left: 12, bottom: 8),
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16)),
+                                        color:
+                                            Color.fromRGBO(221, 234, 254, 1)),
+                                    child: Text(
+                                        CommonConstant.specialties[item] ?? "",
+                                        style: const TextStyle(
+                                            color: Colors.blue))),
+                              )
+                              .toList()
+                          : [],
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    RichText(
+                        overflow: TextOverflow.ellipsis,
+                        strutStyle: const StrutStyle(fontSize: 12.0),
+                        maxLines: 4,
+                        text: TextSpan(
+                            style: const TextStyle(
+                                color: Colors.black38, height: 1.5),
+                            text: item["bio"] ?? "")),
+                    const Padding(padding: EdgeInsets.only(top: 20)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/booking",
+                                arguments: {'tutorId': item["id"]});
+                          },
+                          icon: const Icon(
+                            IconData(0xe122, fontFamily: 'MaterialIcons'),
+                            color: Colors.blue,
+                          ),
+                          label: const Text(
+                            "Đặt lịch",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side:
+                                        const BorderSide(color: Colors.blue))),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
                 ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  item["name"],
-                  style: const TextStyle(
-                      fontSize: 26, fontWeight: FontWeight.w600),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    tutorService.toggleFavorite(item["id"]).then((value) {
-                      if (value["success"]) {
-                        setState(() {
-                          item["isFavoriteTutor"] =
-                          item?["isFavoriteTutor"] == null
-                              ? true
-                              : !item["isFavoriteTutor"];
-                        });
-                      }
-                    });
-                  },
-                  child: item["isFavoriteTutor"] == true
-                      ? const Icon(Icons.favorite, color: Colors.red)
-                      : const Icon(Icons.favorite_border),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                CountryFlag.fromCountryCode(
-                  item['country'] ?? "VN",
-                  height: 26,
-                  width: 30,
-                  borderRadius: 8,
-                ),
-                const Padding(padding: EdgeInsets.only(left: 10)),
-                Text(CommonConstant.countryMap[item['country']] ?? "")
-              ],
-            ),
-            const Padding(padding: EdgeInsets.only(top: 4)),
-            Row(
-              children:
-              CommonUtil.renderStars(item['rating'] ?? 5, 5, 13),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 26)),
-            Wrap(
-              spacing: 12,
-              runSpacing: 6,
-              children: null != item["specialties"]
-                  ? item["specialties"]
-                  .split(',')
-                  .map<Widget>(
-                    (item) => Container(
-                    padding: const EdgeInsets.only(
-                        top: 8, right: 12, left: 12, bottom: 8),
-                    decoration: const BoxDecoration(
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(16)),
-                        color: Color.fromRGBO(221, 234, 254, 1)),
-                    child: Text(
-                        CommonConstant.specialties[item] ?? "",
-                        style:
-                        const TextStyle(color: Colors.blue))),
-              )
-                  .toList()
-                  : [],
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10)),
-            RichText(
-                overflow: TextOverflow.ellipsis,
-                strutStyle: const StrutStyle(fontSize: 12.0),
-                maxLines: 4,
-                text: TextSpan(
-                    style: const TextStyle(
-                        color: Colors.black38, height: 1.5),
-                    text: item["bio"] ?? "")),
-            const Padding(padding: EdgeInsets.only(top: 20)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/booking",
-                        arguments: {'tutorId': item["id"]});
-                  },
-                  icon: const Icon(
-                    IconData(0xe122, fontFamily: 'MaterialIcons'),
-                    color: Colors.blue,
-                  ),
-                  label: const Text(
-                    "Đặt lịch",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: const BorderSide(color: Colors.blue))),
-                    backgroundColor:
-                    MaterialStateProperty.all(Colors.white),
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-      ))
+              ))
           .toList();
       List<DropdownMenuItem<String>> locationWidgets = locations.entries
           .map((entry) => DropdownMenuItem<String>(
-        value: entry.key,
-        child: Text(entry.value),
-      ))
+                value: entry.key,
+                child: Text(entry.value),
+              ))
           .toList();
       List<Widget> specialtyWidgets = CommonConstant.specialties.entries
           .map(
             (entry) => GestureDetector(
-            onTap: () {
-              selectedSpecialty = entry.key;
-              _search();
-            },
-            child: Container(
-                padding: const EdgeInsets.only(
-                    top: 8, right: 12, left: 12, bottom: 8),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  color: entry.key == selectedSpecialty
-                      ? const Color.fromRGBO(221, 234, 254, 1)
-                      : const Color.fromRGBO(228, 230, 235, 1),
-                ),
-                child: Text(entry.value,
-                    style: TextStyle(
-                        color: entry.key == selectedSpecialty
-                            ? Colors.blue
-                            : const Color.fromRGBO(100, 100, 100, 1))))),
-      )
+                onTap: () {
+                  selectedSpecialty = entry.key;
+                  _search();
+                },
+                child: Container(
+                    padding: const EdgeInsets.only(
+                        top: 8, right: 12, left: 12, bottom: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(16)),
+                      color: entry.key == selectedSpecialty
+                          ? const Color.fromRGBO(221, 234, 254, 1)
+                          : const Color.fromRGBO(228, 230, 235, 1),
+                    ),
+                    child: Text(entry.value,
+                        style: TextStyle(
+                            color: entry.key == selectedSpecialty
+                                ? Colors.blue
+                                : const Color.fromRGBO(100, 100, 100, 1))))),
+          )
           .toList();
-      if (lang == "en"){
+      if (lang == "en") {
         totalMinutes = totalMinutes.replaceAll("giờ", "hours");
         totalMinutes = totalMinutes.replaceAll("phút", "minutes");
       } else {
@@ -310,7 +343,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 width: double.infinity,
-                color: Colors.blue,
+                color: theme == "dark" ? Colors.black54 : Colors.blue,
                 padding: const EdgeInsets.only(
                     top: 46, bottom: 30, left: 30, right: 30),
                 child: Column(
@@ -354,7 +387,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const Padding(padding: EdgeInsets.only(top: 26)),
                             ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                jitsiMeet.join(options);
+                              },
                               icon: const Icon(
                                 IconData(0xe457, fontFamily: 'MaterialIcons'),
                                 color: Colors.blue,
@@ -384,11 +419,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.only(top: 30, right: 20, left: 20),
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(
+                    top: 30, right: 20, left: 20, bottom: 30),
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                    border: Border(
+                decoration: BoxDecoration(
+                    color: theme == "dark" ? Colors.black26 : Colors.white,
+                    border: const Border(
                         bottom: BorderSide(
                             color: Color.fromRGBO(100, 100, 100, 1)))),
                 child: Column(
@@ -549,9 +585,9 @@ class _HomePageState extends State<HomePage> {
                       )
                     ]),
               ),
-              const Padding(padding: EdgeInsets.only(top: 14)),
               Container(
-                margin: const EdgeInsets.only(top: 20, right: 20, left: 20),
+                padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
+                color: theme == "dark" ? Colors.black26 : Colors.white,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

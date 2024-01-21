@@ -9,6 +9,8 @@ final Map<String, Map<String, String>> commonLang = {
     "signOut" : "Đăng xuất",
     "vietnamese" : "Tiếng Việt",
     "english" : "Tiếng Anh",
+    "theme-light" : "Chế độ tối",
+    "theme-dark" : "Chế độ sáng",
   },
   "en" : {
     "myAccount" : "My account",
@@ -20,5 +22,7 @@ final Map<String, Map<String, String>> commonLang = {
     "signOut" : "Sign out",
     "vietnamese" : "Vietnamese",
     "english" : "English",
+    "theme-light" : "Dark theme",
+    "theme-dark" : "Light theme",
   },
 };

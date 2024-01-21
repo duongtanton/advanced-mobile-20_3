@@ -173,7 +173,8 @@ class _SignUpPagePageState extends State<SignUpPagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LangCubit, String>(builder: (context, lang) {
+    return BlocBuilder<GlobalStateCubit, GlobalState>(builder: (context, globalState) {
+      String lang = globalState.lang;
       return MainLayout(
           screen: "signup_page",
           body: Column(

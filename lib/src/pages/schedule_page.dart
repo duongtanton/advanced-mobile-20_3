@@ -1,6 +1,9 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile_20120598/src/components/avatar.dart';
 import 'package:mobile_20120598/src/constants/common.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
@@ -29,6 +32,7 @@ class _SchedulePageState extends State<SchedulePage> {
   List<dynamic> schedules = [];
   var totalPage = 1;
   var currentPage = 1;
+  var jitsiMeet = JitsiMeet();
 
   @override
   void initState() {
@@ -343,7 +347,27 @@ class _SchedulePageState extends State<SchedulePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      var studentMeetingLink = e!["studentMeetingLink"];
+                      var token = studentMeetingLink!.split("token=")!.last;
+                      var data = JwtDecoder.decode(token);
+                      var userBeCalled = data!["userBeCalled"];
+                      var userCall = data!["userCall"];
+                      var options = JitsiMeetConferenceOptions(
+                        room: data!["room"],
+                        configOverrides: {
+                          "startWithAudioMuted": false,
+                          "startWithVideoMuted": false,
+                          "subject": "Call with ${userBeCalled!["name"]}"
+                        },
+                        featureFlags: {"unsaferoomwarning.enabled": false},
+                        userInfo: JitsiMeetUserInfo(
+                          displayName: userCall!["name"],
+                          email: userCall["email"],
+                        ),
+                      );
+                      jitsiMeet.join(options);
+                    },
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(
                             const EdgeInsets.only(

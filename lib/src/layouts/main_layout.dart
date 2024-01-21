@@ -70,7 +70,7 @@ class _MainLayoutState extends State<MainLayout> {
     {
       "name": "Đăng xuất",
       "icon": Icons.logout,
-      "route": "/sign-in",
+      "route": "sign-out",
     },
   ];
   List<dynamic> languages = [
@@ -96,6 +96,12 @@ class _MainLayoutState extends State<MainLayout> {
 
   _asyncMethod() async {
     prefs = await SharedPreferences.getInstance();
+    if (widget.showNavigators &&
+        (prefs.getString('access_token') == null ||
+            prefs.getString('refresh_token') == null)) {
+      Navigator.pushNamed(context, "/sign-in");
+      return;
+    }
     await _getUserInfo();
     await _getAllRecipient();
     toUserId = _recipients![0]!["partner"]!["id"];
@@ -227,7 +233,10 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LangCubit, String>(builder: (context, lang){
+    return BlocBuilder<GlobalStateCubit, GlobalState>(
+        builder: (context, globalState) {
+      String lang = globalState.lang;
+      String theme = globalState.theme;
       navigators = [
         {
           "name": user?["name"] ?? commonLang[lang]!["myAccount"],
@@ -260,17 +269,18 @@ class _MainLayoutState extends State<MainLayout> {
           "route": "/become-tutor",
         },
         {
+          "name": commonLang[lang]!["theme-$theme"],
+          "icon": Icons.mode_edit,
+          "route": "theme",
+        },
+        {
           "name": commonLang[lang]!["signOut"],
           "icon": Icons.logout,
-          "route": "/sign-in",
+          "route": "sign-out",
         },
       ];
       languages = [
-        {
-          "name": commonLang[lang]!["english"],
-          "code": "en",
-          "country": "US"
-        },
+        {"name": commonLang[lang]!["english"], "code": "en", "country": "US"},
         {
           "name": commonLang[lang]!["vietnamese"],
           "code": "vi",
@@ -297,50 +307,71 @@ class _MainLayoutState extends State<MainLayout> {
               PopupMenuButton(
                   itemBuilder: (BuildContext bc) => languages
                       .map((e) => PopupMenuItem(
-                      value: lang,
-                      onTap: () async {
-                        context.read<LangCubit>().change(e["code"]);
-                        await prefs.setString('lang', e["code"]);
-                      },
-                      child: Row(
-                        children: [
-                          CountryFlag.fromCountryCode(e["country"],
-                              width: 30, height: 40),
-                          const Padding(padding: EdgeInsets.only(right: 10)),
-                          Text(e["name"])
-                        ],
-                      )))
+                          value: lang,
+                          onTap: () async {
+                            context
+                                .read<GlobalStateCubit>()
+                                .changeLang(e["code"]);
+                            await prefs.setString('lang', e["code"]);
+                          },
+                          child: Row(
+                            children: [
+                              CountryFlag.fromCountryCode(e["country"],
+                                  width: 30, height: 40),
+                              const Padding(
+                                  padding: EdgeInsets.only(right: 10)),
+                              Text(e["name"])
+                            ],
+                          )))
                       .toList(),
                   onSelected: (value) {},
                   icon: lang == "vi"
                       ? CountryFlag.fromCountryCode("VN", width: 30, height: 40)
-                      : CountryFlag.fromCountryCode("US", width: 30, height: 40),
+                      : CountryFlag.fromCountryCode("US",
+                          width: 30, height: 40),
                   position: PopupMenuPosition.under),
               const Padding(padding: EdgeInsets.only(right: 10)),
               widget.showNavigators
                   ? PopupMenuButton(
-                  itemBuilder: (BuildContext bc) => navigators
-                      .map((e) => PopupMenuItem(
-                      value: e["name"],
-                      onTap: () =>
-                          Navigator.pushNamed(context, e["route"]),
-                      child: Row(
-                        children: [
-                          e["route"] == "/user"
-                              ? Avatar(
-                              url: user != null ? user["avatar"] : "",
-                              size: 30)
-                              : Icon(e["icon"]),
-                          const Padding(
-                              padding: EdgeInsets.only(right: 10)),
-                          Text(e["name"])
-                        ],
-                      )))
-                      .toList(),
-                  onSelected: (value) {},
-                  icon: Avatar(
-                      url: user != null ? user["avatar"] : "", size: 30),
-                  position: PopupMenuPosition.under)
+                      itemBuilder: (BuildContext bc) => navigators
+                          .map((e) => PopupMenuItem(
+                              value: e["name"],
+                              onTap: () {
+                                if (e["route"] == "theme") {
+                                  context.read<GlobalStateCubit>().changeTheme(
+                                      theme == "light" ? "dark" : "light");
+                                  prefs.setString('theme',
+                                      theme == "light" ? "dark" : "light");
+                                  return;
+                                }
+                                if (e["route"] == "sign-out") {
+                                  prefs.remove('user');
+                                  prefs.remove('access_token');
+                                  prefs.remove('refresh_token');
+                                  Navigator.pushNamed(context, "/sign-in");
+                                  return;
+                                }
+                                Navigator.pushNamed(context, e["route"]);
+                              },
+                              child: Row(
+                                children: [
+                                  e["route"] == "/user"
+                                      ? Avatar(
+                                          url: user != null
+                                              ? user["avatar"]
+                                              : "",
+                                          size: 30)
+                                      : Icon(e["icon"]),
+                                  const Padding(
+                                      padding: EdgeInsets.only(right: 10)),
+                                  Text(e["name"])
+                                ],
+                              )))
+                          .toList(),
+                      onSelected: (value) {},
+                      icon: Avatar(
+                          url: user != null ? user["avatar"] : "", size: 30),
+                      position: PopupMenuPosition.under)
                   : Container(),
               const Padding(padding: EdgeInsets.only(right: 10)),
             ],

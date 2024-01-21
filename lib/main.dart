@@ -41,15 +41,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: '20120598',
         initialRoute: "/sign-in",
+        themeMode: ThemeMode.system,
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case '/':
               return MaterialPageRoute(
                   builder: (context) => BlocProvider(
                         create: (context) {
-                          String lang =
-                              prefs.getString('lang') ?? 'vi';
-                          return LangCubit(lang);
+                          String lang = prefs.getString('lang') ?? 'vi';
+                          String theme = prefs.getString('theme') ?? 'light';
+                          return GlobalStateCubit(lang, theme);
                         },
                         child: const HomePage(title: ""),
                       ),
@@ -58,9 +59,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => BlocProvider(
                         create: (context) {
-                          String lang =
-                              prefs.getString('lang') ?? 'vi';
-                          return LangCubit(lang);
+                          String lang = prefs.getString('lang') ?? 'vi';
+                          String theme = prefs.getString('theme') ?? 'light';
+                          return GlobalStateCubit(lang, theme);
                         },
                         child: const SignInPage(title: "sign-in"),
                       ),
@@ -69,9 +70,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => BlocProvider(
                         create: (context) {
-                          String lang =
-                              prefs.getString('lang') ?? 'vi';
-                          return LangCubit(lang);
+                          String lang = prefs.getString('lang') ?? 'vi';
+                          String theme = prefs.getString('theme') ?? 'light';
+                          return GlobalStateCubit(lang, theme);
                         },
                         child: const SignUpPagePage(title: "sign-up"),
                       ),
@@ -80,8 +81,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const BookingPage(title: "booking"),
                     );
                   },
@@ -90,8 +92,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const SchedulePage(title: "schedule"),
                     );
                   },
@@ -100,8 +103,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const EvaluatePage(title: "evaluate"),
                     );
                   },
@@ -110,8 +114,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const CoursesPage(title: "courses"),
                     );
                   },
@@ -120,8 +125,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const CourseInfoPage(title: "course-info"),
                     );
                   },
@@ -130,8 +136,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const LessonInfoPage(title: "lesson-info"),
                     );
                   },
@@ -140,8 +147,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang,  theme),
                       child: const VideoCallPage(title: "video-call"),
                     );
                   },
@@ -150,8 +158,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const UserPage(title: "user"),
                     );
                   },
@@ -160,8 +169,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const BecomeTutorPage(title: "become-tutor"),
                     );
                   },
@@ -171,8 +181,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) {
                     String lang = prefs.getString('lang') ?? 'vi';
+                    String theme = prefs.getString('theme') ?? 'light';
                     return BlocProvider(
-                      create: (context) => LangCubit(lang),
+                      create: (context) => GlobalStateCubit(lang, theme),
                       child: const ErrorPage(title: "error"),
                     );
                   },

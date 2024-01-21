@@ -297,7 +297,8 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LangCubit, String>(builder: (context, lang) {
+    return BlocBuilder<GlobalStateCubit, GlobalState>(builder: (context, globalSate) {
+      String lang = globalSate.lang;
       dynamic args = ModalRoute.of(context)!.settings.arguments;
       tutorId =
           null != args && null != args['tutorId'] ? args['tutorId'] : null;

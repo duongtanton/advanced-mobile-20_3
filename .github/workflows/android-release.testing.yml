@@ -2,7 +2,7 @@ name: Android Release Testing
 
 on:
   push:
-    branches: "testing"
+    branches: "milestone-3"
 
 jobs:
   version:

@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
           package="com.tonduong.mobile_20120598">
     <application
+            tools:replace="android:label"
             android:label="mobile_20120598"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">

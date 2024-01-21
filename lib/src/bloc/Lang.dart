@@ -1,7 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LangCubit extends Cubit<String> {
-  LangCubit(lang) : super(lang ?? "vi");
+class GlobalState {
+  late String lang;
+  late String theme;
 
-  void change(lang) => emit(lang);
+  GlobalState(this.lang, this.theme);
+}
+
+class GlobalStateCubit extends Cubit<GlobalState> {
+  GlobalStateCubit(lang, theme)
+      : super(GlobalState(lang ?? "vi", theme ?? 'light'));
+
+  void changeLang(lang) => emit(GlobalState(lang, state.theme));
+
+  void changeTheme(theme) => emit(GlobalState(state.lang, theme));
 }
