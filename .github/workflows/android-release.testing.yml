@@ -1,0 +1,121 @@
+name: Android Release Testing
+
+on:
+  push:
+    branches: "milestone-3"
+
+jobs:
+  version:
+    name: Get version of build
+    runs-on: ubuntu-latest
+    outputs:
+      value: ${{ steps.fututre.outputs.value }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Extract version from commit message
+        id: fututre
+        run: |
+          input_string="${{ github.event.head_commit.message }}"
+          regex_pattern='Version: (([0-9])+\.([0-9])+\.([0-9])+)'
+          if [[ $input_string =~ $regex_pattern ]]; then
+              version_info="${BASH_REMATCH[1]}"
+              echo "Version information found: $version_info"
+              echo "::set-output name=value::$version_info"
+          else
+              echo "No version information found or not correct format like version: x.y.z."
+              exit 1
+          fi
+
+  build:
+    name: Create Android Build
+    environment: cicd
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update version in YAML
+        run: |
+          echo "${{ needs.version.outputs.value }}+${{ github.run_number }}"
+          sed -i -E 's/version: ([0-9])+\.([0-9])+\.([0-9])+\+([0-9])+/version: ${{ needs.version.outputs.value }}+${{ github.run_number }}/g' pubspec.yaml
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Create key.properties
+        run: |
+          echo "${{ steps.android_keystore.outputs.filePath }}"
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: "17"
+          cache: gradle
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.3"
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Start Android Release Test
+        run: flutter test --dart-define=FLAVOR=testing
+
+      - name: Start Android Release Build
+        run: flutter build appbundle --dart-define=FLAVOR=testing
+
+      - name: Upload Android Release
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-release
+          path: build/app/outputs/bundle/release/app-release.aab
+
+  deploy:
+    name: Deploy Android Bundle
+    environment: cicd
+    needs: [build, version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get Android Build from artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: android-release
+      - name: Create Release
+        id: release-github
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ needs.version.outputs.value }}-testing
+          release_name: Release v${{ needs.version.outputs.value }}-testing
+          body: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+  #     - name: Release Build to internal track
+  #       uses: r0adkll/upload-google-play@v1
+  #       with:
+  #         serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
+  #         packageName: university.hcmus.advanced_mobile_flutter_cicd
+  #         releaseFiles: app-release.aab
+  #         track: alpha
+  #         status: completed
+
+  notification:
+    name: Slack Notification
+    environment: cicd
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          

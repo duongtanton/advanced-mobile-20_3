@@ -1,0 +1,28 @@
+final Map<String, Map<String, String>> commonLang = {
+  "vi" : {
+    "myAccount" : "Tài khoản của tôi",
+    "tutor" : "Gia sư",
+    "schedule" : "Lịch học",
+    "history" : "Lịch sử",
+    "course" : "Khóa học",
+    "becomeTutor" : "Trở thành gia sư",
+    "signOut" : "Đăng xuất",
+    "vietnamese" : "Tiếng Việt",
+    "english" : "Tiếng Anh",
+    "theme-light" : "Chế độ tối",
+    "theme-dark" : "Chế độ sáng",
+  },
+  "en" : {
+    "myAccount" : "My account",
+    "tutor" : "Tutor",
+    "schedule" : "Schedule",
+    "history" : "History",
+    "course" : "Courses",
+    "becomeTutor" : "Become a tutor",
+    "signOut" : "Sign out",
+    "vietnamese" : "Vietnamese",
+    "english" : "English",
+    "theme-light" : "Dark theme",
+    "theme-dark" : "Light theme",
+  },
+};

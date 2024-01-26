@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:mobile_20120598/src/layouts/main_layout.dart';
 import 'package:number_paginator/number_paginator.dart';
 
-class VideoCallPage extends StatefulWidget {
-  const VideoCallPage({super.key, required this.title});
+class LessonInfoPage extends StatefulWidget {
+  const LessonInfoPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<VideoCallPage> createState() => _VideoCallPageState();
+  State<LessonInfoPage> createState() => _LessonInfoPageState();
 }
 
-class _VideoCallPageState extends State<VideoCallPage> {
+class _LessonInfoPageState extends State<LessonInfoPage> {
   @override
   void initState() {
     super.initState();
@@ -20,16 +20,16 @@ class _VideoCallPageState extends State<VideoCallPage> {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
-        screen: "vide_call_page",
+        screen: "lesson_info_page",
         showNavigators: true,
-        body: Column(
+        body:Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             NumberPaginator(
               numberPages: 10,
               onPageChange: (int index) {
                 // handle page change...
-                Navigator.pushNamed(context, "/");
+                Navigator.pushNamed(context, "/video-call");
               },
             )
           ],
